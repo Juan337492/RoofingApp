@@ -1,98 +1,128 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link } from 'expo-router';
+import Head from 'expo-router/head';
+import { Pressable, Text, View } from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Screen } from '@/components/screen';
+import { FaqAccordion, ProcessSteps, ReviewCard, TrustBar } from '@/components/sections';
+import { Body, CallButton, Chip, Heading, Section } from '@/components/ui';
+import { Colors, Fonts, Spacing } from '@/constants/theme';
+import { getService, services } from '@/data/services';
+import { locations } from '@/data/locations';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+const homeReviews = [
+  { name: 'Jason M.', place: 'Marietta', text: 'Dynamic Roofing made the whole process so easy after our storm damage. Great communication and amazing work!' },
+  { name: 'Melissa T.', place: 'Smyrna', text: 'They handled everything with the insurance company and got our new roof approved quickly. Highly recommend!' },
+  { name: 'Brian K.', place: 'Powder Springs', text: 'Professional, honest, and dependable. Our new roof looks fantastic and the cleanup was spotless.' },
+];
+
+const serviceBlurbs: Record<string, string> = {
+  'roof-replacement': 'Durable, high-performance roofing installed with expert craftsmanship.',
+  'roof-repair': 'Fast, reliable repairs for leaks, damage, and everyday wear.',
+  'storm-damage-roofing': 'Storm damage experts — assessment, repairs, and restoration.',
+  'insurance-claims': 'We handle the process and paperwork to get your claim approved.',
+  gutters: 'Protect your home with seamless gutters and proper drainage.',
+  siding: 'Boost curb appeal and protection with quality siding solutions.',
+  'roof-inspection': 'Free professional inspections with full photo reports.',
+};
 
 export default function HomeScreen() {
+  const claimSteps = getService('insurance-claims')!.process;
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <Screen>
+      <Head>
+        <title>Dynamic Roofing | Roofing & Storm Damage Experts in Powder Springs, GA</title>
+        <meta
+          name="description"
+          content="Powder Springs' trusted roofing and storm damage experts. Free roof inspections, insurance claim specialists, GAF certified. Serving west metro Atlanta."
+        />
+      </Head>
+      {/* Hero */}
+      <Section style={{ paddingVertical: Spacing.xxl, gap: Spacing.md }}>
+        <Text style={{ color: Colors.orange, fontFamily: Fonts.headingMedium, fontSize: 13, textTransform: 'uppercase', letterSpacing: 2 }}>
+          Serving Powder Springs & West Metro Atlanta
+        </Text>
+        <Heading level={1}>Powder Springs{'\u2019'} Trusted Roofing & Storm Damage Experts</Heading>
+        <Body style={{ fontSize: 16 }}>
+          High-quality roofing solutions. Local expertise. Built to protect what matters most.
+        </Body>
+        <View style={{ flexDirection: 'row', gap: Spacing.md, flexWrap: 'wrap' }}>
+          <CallButton label="Free Roof Inspection" />
+          <CallButton label="Call Now" variant="outline" />
+        </View>
+      </Section>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <TrustBar />
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      {/* Services */}
+      <Section style={{ gap: Spacing.lg }}>
+        <Heading level={2}>Our Services</Heading>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md }}>
+          {services.map((service) => (
+            <Link key={service.slug} href={{ pathname: '/services/[slug]', params: { slug: service.slug } }} asChild>
+              <Pressable style={{ flexGrow: 1, flexBasis: 280 }}>
+                {({ pressed }) => (
+                  <View
+                    style={{
+                      backgroundColor: pressed ? Colors.surfaceAlt : Colors.surface,
+                      borderWidth: 1,
+                      borderColor: pressed ? Colors.orange : Colors.border,
+                      borderRadius: 8,
+                      padding: Spacing.lg,
+                      gap: Spacing.sm,
+                      minHeight: 140,
+                    }}>
+                    <Heading level={3}>{service.name}</Heading>
+                    <Body>{serviceBlurbs[service.slug]}</Body>
+                    <Text style={{ color: Colors.orange, fontFamily: Fonts.headingMedium, fontSize: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
+                      Learn More {'\u2192'}
+                    </Text>
+                  </View>
+                )}
+              </Pressable>
+            </Link>
+          ))}
+        </View>
+      </Section>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      {/* Insurance claims process */}
+      <Section alt style={{ gap: Spacing.lg }}>
+        <Heading level={2}>Insurance Claims Made Easy</Heading>
+        <ProcessSteps steps={claimSteps} />
+      </Section>
+
+      {/* Reviews */}
+      <Section style={{ gap: Spacing.lg }}>
+        <Heading level={2}>What Homeowners Say</Heading>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md }}>
+          {homeReviews.map((r) => (
+            <ReviewCard key={r.name} {...r} />
+          ))}
+        </View>
+      </Section>
+
+      {/* Service areas */}
+      <Section alt style={{ gap: Spacing.lg }}>
+        <Heading level={2}>Proudly Serving West Atlanta</Heading>
+        <Body>Local team. Local knowledge. Exceptional results.</Body>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+          {locations.map((loc) => (
+            <Chip key={loc.slug} label={loc.city} href={{ pathname: '/locations/[city]', params: { city: loc.slug } }} />
+          ))}
+        </View>
+      </Section>
+
+      {/* FAQ highlights */}
+      <Section style={{ gap: Spacing.lg }}>
+        <Heading level={2}>Frequently Asked Questions</Heading>
+        <FaqAccordion
+          faqs={[
+            ...getService('roof-replacement')!.faqs.slice(0, 2),
+            ...getService('storm-damage-roofing')!.faqs.slice(0, 1),
+            ...getService('insurance-claims')!.faqs.slice(0, 1),
+          ]}
+        />
+      </Section>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
