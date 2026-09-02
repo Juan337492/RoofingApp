@@ -26,6 +26,11 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: Colors.background },
+          // Smooth native page transition: new page slides in from the right,
+          // and swiping from the left edge goes back (iOS).
+          animation: 'slide_from_right',
+          animationDuration: 260,
+          gestureEnabled: true,
         }}
       />
     </>

@@ -1,7 +1,8 @@
 {
   "expo": {
+    "owner": "juantaco",
     "name": "Dynamic Roofing",
-    "slug": "dynamic-roofing",
+    "slug": "RoofingApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -29,11 +30,25 @@
           "imageWidth": 200
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "17b76c0b-fd12-4a26-be26-47941e69edb2"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/17b76c0b-fd12-4a26-be26-47941e69edb2"
+    },
+    "ios": {}
   }
 }

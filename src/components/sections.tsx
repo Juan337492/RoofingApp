@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 
 import { Body, CallButton, Heading, Section, Stars } from '@/components/ui';
 import type { Faq } from '@/data/services';
@@ -27,23 +28,73 @@ export function CtaBand({ title, subtitle }: { title: string; subtitle?: string 
 }
 
 const trustItems = [
-  { title: 'GAF Certified', subtitle: 'Weather Stopper\u00AE Roofing Contractor' },
   { title: 'Licensed & Insured', subtitle: 'Your protection is our priority' },
   { title: '5.0 Google Reviews', subtitle: '\u2605\u2605\u2605\u2605\u2605', gold: true },
   { title: 'Insurance Claim Specialists', subtitle: 'We work for you, not the insurance company' },
 ];
 
-export function TrustBar() {
+function CertificationBadge({
+  source,
+  label,
+  accessibilityLabel,
+}: {
+  source: number;
+  label: string;
+  accessibilityLabel: string;
+}) {
   return (
-    <Section alt style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.lg, justifyContent: 'space-between', paddingVertical: Spacing.lg }}>
-      {trustItems.map((item) => (
-        <View key={item.title} style={{ minWidth: 150, flex: 1, gap: 2 }}>
-          <Text style={{ color: Colors.white, fontFamily: Fonts.headingMedium, fontSize: 14, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-            {item.title}
-          </Text>
-          <Text style={{ color: item.gold ? Colors.gold : Colors.textSecondary, fontSize: 12 }}>{item.subtitle}</Text>
+    <View style={{ alignItems: 'center', gap: 8, minWidth: 128 }}>
+      <Image source={source} style={{ width: 128, height: 128 }} contentFit="contain" accessibilityLabel={accessibilityLabel} />
+      <Text style={{ color: Colors.white, fontFamily: Fonts.headingMedium, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+export function TrustBar() {
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 768;
+
+  return (
+    <Section alt style={{ gap: isDesktop ? 0 : Spacing.lg, paddingVertical: isDesktop ? Spacing.lg : Spacing.xl }}>
+      <View
+        style={{
+          flexDirection: isDesktop ? 'row' : 'column',
+          alignItems: isDesktop ? 'center' : 'stretch',
+          justifyContent: 'space-between',
+          gap: isDesktop ? Spacing.xl : Spacing.lg,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: isDesktop ? 'flex-start' : 'center',
+            alignItems: 'flex-end',
+            gap: Spacing.lg,
+          }}>
+          <CertificationBadge
+            source={require('../../assets/images/gaf-certified.png')}
+            label="GAF Certified"
+            accessibilityLabel="GAF Certified Residential Roofing Contractor"
+          />
+          <CertificationBadge
+            source={require('../../assets/images/atlas-gold.png')}
+            label="Atlas Pro+ Gold"
+            accessibilityLabel="Atlas Pro Plus Gold certified contractor"
+          />
         </View>
-      ))}
+        <View style={{ flex: isDesktop ? 1 : undefined, flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.lg, justifyContent: 'space-between' }}>
+          {trustItems.map((item) => (
+            <View key={item.title} style={{ minWidth: 150, flex: 1, gap: 2 }}>
+              <Text style={{ color: Colors.white, fontFamily: Fonts.headingMedium, fontSize: 14, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                {item.title}
+              </Text>
+              <Text style={{ color: item.gold ? Colors.gold : Colors.textSecondary, fontSize: 12 }}>{item.subtitle}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
     </Section>
   );
 }
@@ -91,6 +142,7 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
                   color: isOpen ? Colors.orange : Colors.white,
                   fontFamily: Fonts.headingMedium,
                   fontSize: 15,
+                  lineHeight: 22,
                 }}>
                 {faq.question}
               </Text>

@@ -10,7 +10,7 @@ export function Screen({ children, ctaTitle }: { children: React.ReactNode; ctaT
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       <Header />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }} directionalLockEnabled>
         {children}
         <View style={{ flex: 1 }} />
         <CtaBand

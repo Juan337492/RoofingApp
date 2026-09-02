@@ -4,7 +4,8 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
 import { FaqAccordion, ProcessSteps, ReviewCard, TrustBar } from '@/components/sections';
-import { Body, CallButton, Chip, Heading, Section } from '@/components/ui';
+import { HeroVideo } from '@/components/hero-video';
+import { Body, CallButton, Chip, Heading, OrangeButton, Section } from '@/components/ui';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { getService, services } from '@/data/services';
 import { locations } from '@/data/locations';
@@ -37,18 +38,25 @@ export default function HomeScreen() {
           content="Powder Springs' trusted roofing and storm damage experts. Free roof inspections, insurance claim specialists, GAF certified. Serving west metro Atlanta."
         />
       </Head>
-      {/* Hero */}
+      <HeroVideo />
       <Section style={{ paddingVertical: Spacing.xxl, gap: Spacing.md }}>
-        <Text style={{ color: Colors.orange, fontFamily: Fonts.headingMedium, fontSize: 13, textTransform: 'uppercase', letterSpacing: 2 }}>
+        <Text
+          style={{
+            color: Colors.orange,
+            fontFamily: Fonts.headingMedium,
+            fontSize: 13,
+            lineHeight: 20,
+            textTransform: 'uppercase',
+            letterSpacing: 2,
+          }}>
           Serving Powder Springs & West Metro Atlanta
         </Text>
         <Heading level={1}>Powder Springs{'\u2019'} Trusted Roofing & Storm Damage Experts</Heading>
         <Body style={{ fontSize: 16 }}>
           High-quality roofing solutions. Local expertise. Built to protect what matters most.
         </Body>
-        <View style={{ flexDirection: 'row', gap: Spacing.md, flexWrap: 'wrap' }}>
+        <View style={{ flexDirection: 'row' }}>
           <CallButton label="Free Roof Inspection" />
-          <CallButton label="Call Now" variant="outline" />
         </View>
       </Section>
 
@@ -89,6 +97,18 @@ export default function HomeScreen() {
       <Section alt style={{ gap: Spacing.lg }}>
         <Heading level={2}>Insurance Claims Made Easy</Heading>
         <ProcessSteps steps={claimSteps} />
+      </Section>
+
+      {/* Shingle comparison tools */}
+      <Section style={{ gap: Spacing.md }}>
+        <Heading level={2}>Pick Your Perfect Shingle</Heading>
+        <Body>
+          Compare popular GAF shingles side by side and explore Timberline HDZ{'\u00AE'} colors with our interactive
+          tools.
+        </Body>
+        <View style={{ flexDirection: 'row' }}>
+          <OrangeButton label="Open Shingle Comparison Tools" href="/shingles" />
+        </View>
       </Section>
 
       {/* Reviews */}

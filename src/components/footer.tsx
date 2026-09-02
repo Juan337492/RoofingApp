@@ -53,7 +53,7 @@ export function Footer() {
         </View>
 
         <Body style={{ fontSize: 12 }}>
-          {'\u00A9'} {new Date().getFullYear()} {Site.name}. All rights reserved. Licensed & Insured. GAF Certified Contractor.
+          {'\u00A9'} {new Date().getFullYear()} {Site.name}. All rights reserved. Licensed & Insured. GAF Certified Contractor. Atlas Pro+ Gold.
         </Body>
       </View>
     </View>
