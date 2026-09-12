@@ -9,7 +9,7 @@ export const Site = {
   phoneHref: 'tel:+14047849030',
   email: 'Dynamic.rcllc@gmail.com',
   // TODO: Replace with the full street address before launch.
-  address: 'Powder Springs, GA 30127',
+  address: 'Dallas, GA 30157',
   calendlyUrl: 'https://calendly.com/dynamic-rcllc/roof',
   heroVideoUrl: 'https://media.dynamicroofingandconstruction.us/Roofing.mp4',
   socials: [

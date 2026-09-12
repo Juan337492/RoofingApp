@@ -32,10 +32,10 @@ export default function HomeScreen() {
   return (
     <Screen>
       <Head>
-        <title>Dynamic Roofing | Roofing & Storm Damage Experts in Powder Springs, GA</title>
+        <title>Dynamic Roofing | Roofing & Storm Damage Experts in Dallas, GA</title>
         <meta
           name="description"
-          content="Powder Springs' trusted roofing and storm damage experts. Free roof inspections, insurance claim specialists, GAF certified. Serving west metro Atlanta."
+          content="Dallas, GA's trusted roofing and storm damage experts. Free roof inspections, insurance claim specialists, GAF certified. Serving west metro Atlanta."
         />
       </Head>
       <HeroVideo />
@@ -49,9 +49,9 @@ export default function HomeScreen() {
             textTransform: 'uppercase',
             letterSpacing: 2,
           }}>
-          Serving Powder Springs & West Metro Atlanta
+          Serving Dallas, GA & West Metro Atlanta
         </Text>
-        <Heading level={1}>Powder Springs{'\u2019'} Trusted Roofing & Storm Damage Experts</Heading>
+        <Heading level={1}>Dallas, GA{'\u2019'}s Trusted Roofing & Storm Damage Experts</Heading>
         <Body style={{ fontSize: 16 }}>
           High-quality roofing solutions. Local expertise. Built to protect what matters most.
         </Body>
