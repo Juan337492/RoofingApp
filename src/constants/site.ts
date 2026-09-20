@@ -12,6 +12,7 @@ export const Site = {
   address: 'Dallas, GA 30157',
   calendlyUrl: 'https://calendly.com/dynamic-rcllc/roof',
   heroVideoUrl: 'https://media.dynamicroofingandconstruction.us/Roofing.mp4',
+  googleReviewsUrl: 'https://share.google/Mph05eVHfJiXqQHXq',
   socials: [
     { label: 'Facebook', url: 'https://www.facebook.com/Dynamic.rcllc' },
     { label: 'Instagram', url: 'https://www.instagram.com/dynamic.roofing?igsh=d3RkdndsOG5nMDAw' },

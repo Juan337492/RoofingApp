@@ -7,7 +7,6 @@ export type Location = {
   neighborhoods: string[];
   projects: { neighborhood: string; type: string; description: string }[];
   stats: { value: string; label: string }[];
-  reviews: { name: string; neighborhood: string; text: string }[];
   faqs: Faq[];
 };
 
@@ -27,10 +26,6 @@ export const locations: Location[] = [
       { value: '14', label: 'hail events since 2020' },
       { value: '60+', label: 'roofs replaced in Powder Springs' },
       { value: '$1.2M+', label: 'in approved insurance claims' },
-    ],
-    reviews: [
-      { name: 'Jessica M.', neighborhood: 'Silver Springs Village', text: 'Dynamic Roofing was incredible from start to finish. After the hailstorm, they responded quickly, handled everything with our insurance, and our new roof looks amazing!' },
-      { name: 'Brian T.', neighborhood: 'Country Walk', text: 'Honest, professional, and local. They showed up fast after the storm and had our roof fixed in no time. Highly recommend.' },
     ],
     faqs: [
       { question: 'Does Dynamic Roofing offer free inspections in Powder Springs?', answer: 'Yes — every inspection in Powder Springs is completely free and includes a full photo report.' },
@@ -54,10 +49,6 @@ export const locations: Location[] = [
       { value: '45+', label: 'roofs serviced in Marietta' },
       { value: '$900K+', label: 'in approved insurance claims' },
     ],
-    reviews: [
-      { name: 'Jason M.', neighborhood: 'East Cobb', text: 'Dynamic Roofing made the whole process so easy after our storm damage. Great communication and amazing work!' },
-      { name: 'Karen L.', neighborhood: 'Marietta Square', text: 'They treated our older home with real care and the roof came out beautiful. Fair price, no pressure.' },
-    ],
     faqs: [
       { question: 'Do you offer free roof inspections in Marietta?', answer: 'Yes — free inspections with photo reports anywhere in Marietta and East Cobb.' },
       { question: 'Can you work on historic homes near Marietta Square?', answer: 'Yes. We are experienced with steeper pitches and architectural details common in Marietta\u2019s older neighborhoods.' },
@@ -78,10 +69,6 @@ export const locations: Location[] = [
       { value: '11', label: 'hail events since 2020' },
       { value: '35+', label: 'roofs serviced in Smyrna' },
       { value: '$700K+', label: 'in approved insurance claims' },
-    ],
-    reviews: [
-      { name: 'Melissa T.', neighborhood: 'Market Village', text: 'They handled everything with the insurance company and got our new roof approved quickly. Highly recommend!' },
-      { name: 'Derek W.', neighborhood: 'Forest Hills', text: 'Professional crew, spotless cleanup, and the roof looks fantastic.' },
     ],
     faqs: [
       { question: 'Do you serve all of Smyrna?', answer: 'Yes — from Market Village to the Vinings border, including townhome and HOA communities.' },
@@ -104,10 +91,6 @@ export const locations: Location[] = [
       { value: '30+', label: 'roofs serviced in Douglasville' },
       { value: '$650K+', label: 'in approved insurance claims' },
     ],
-    reviews: [
-      { name: 'Angela R.', neighborhood: 'Chapel Hills', text: 'From inspection to final walkthrough, everything was smooth. They even caught damage our insurance adjuster missed.' },
-      { name: 'Marcus D.', neighborhood: 'Stewart Mill', text: 'Fast, fair, and honest. The crew finished in one day and the cleanup was perfect.' },
-    ],
     faqs: [
       { question: 'Do you offer free inspections in Douglasville?', answer: 'Yes — free inspections with full photo documentation anywhere in Douglas County.' },
       { question: 'Does Douglasville really get that much hail?', answer: 'The I-20 west corridor sees regular spring hail. Many Douglasville roofs have unclaimed damage their owners never knew about.' },
@@ -128,10 +111,6 @@ export const locations: Location[] = [
       { value: '10', label: 'hail events since 2020' },
       { value: '25+', label: 'roofs serviced in Austell' },
       { value: '$500K+', label: 'in approved insurance claims' },
-    ],
-    reviews: [
-      { name: 'Tonya S.', neighborhood: 'Legacy Park', text: 'They came out the day after the storm, tarped our leak, and had the insurance claim approved within weeks.' },
-      { name: 'Rob H.', neighborhood: 'Clarkdale', text: 'Local company that actually answers the phone. Quality work at a fair price.' },
     ],
     faqs: [
       { question: 'How quickly can you get to Austell?', answer: 'We are based next door in Powder Springs — same-day visits are often possible.' },
@@ -154,10 +133,6 @@ export const locations: Location[] = [
       { value: '30+', label: 'roofs serviced in Dallas, GA' },
       { value: '$600K+', label: 'in approved insurance claims' },
     ],
-    reviews: [
-      { name: 'Chris P.', neighborhood: 'Seven Hills', text: 'Half our neighborhood got new roofs after the hailstorm — Dynamic Roofing was the only company people recommended twice.' },
-      { name: 'Dana K.', neighborhood: 'The Georgian', text: 'Handled our HOA requirements and insurance paperwork without us lifting a finger.' },
-    ],
     faqs: [
       { question: 'Do you cover all of Paulding County?', answer: 'Yes — Dallas, Hiram, and the surrounding Paulding County communities are all in our core service area.' },
       { question: 'Why is hail so common in Dallas, GA?', answer: 'Paulding County sits in a frequent spring storm track. If hail hit your area, a free inspection is worth it even if the roof looks fine.' },
@@ -179,10 +154,6 @@ export const locations: Location[] = [
       { value: '20+', label: 'roofs serviced in Acworth' },
       { value: '$450K+', label: 'in approved insurance claims' },
     ],
-    reviews: [
-      { name: 'Steve B.', neighborhood: 'Brookstone', text: 'Excellent communication, showed up when they said they would, and the roof looks great.' },
-      { name: 'Lauren F.', neighborhood: 'Centennial Lakes', text: 'They found hail damage we could not see from the ground and got the whole roof covered by insurance.' },
-    ],
     faqs: [
       { question: 'Do you serve the Lake Acworth area?', answer: 'Yes — lakeside and all surrounding Acworth neighborhoods, including Bentwater and Brookstone.' },
       { question: 'Can you handle steep or complex rooflines?', answer: 'Yes. Our crews are equipped and insured for steep-slope architectural roofs.' },
@@ -203,10 +174,6 @@ export const locations: Location[] = [
       { value: '12', label: 'hail events since 2020' },
       { value: '25+', label: 'roofs serviced in Kennesaw' },
       { value: '$550K+', label: 'in approved insurance claims' },
-    ],
-    reviews: [
-      { name: 'Amanda G.', neighborhood: 'Legacy Park', text: 'Professional from the first call. The photo report made the insurance process painless.' },
-      { name: 'Victor N.', neighborhood: 'Pinetree', text: 'Quick, clean, and honest — told us half the roof just needed repair, not replacement. Saved us thousands.' },
     ],
     faqs: [
       { question: 'Do you offer free inspections in Kennesaw?', answer: 'Yes — free inspections with photo reports throughout Kennesaw and northwest Cobb.' },

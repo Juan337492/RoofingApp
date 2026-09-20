@@ -1,20 +1,19 @@
 import { Link } from 'expo-router';
 import Head from 'expo-router/head';
-import { Pressable, Text, View } from 'react-native';
+import { Linking, Pressable, Text, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
 import { FaqAccordion, ProcessSteps, ReviewCard, TrustBar } from '@/components/sections';
 import { HeroVideo } from '@/components/hero-video';
 import { Body, CallButton, Chip, Heading, OrangeButton, Section } from '@/components/ui';
+import { Site } from '@/constants/site';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { getService, services } from '@/data/services';
 import { locations } from '@/data/locations';
+import { pickReviews } from '@/data/reviews';
 
-const homeReviews = [
-  { name: 'Jason M.', place: 'Marietta', text: 'Dynamic Roofing made the whole process so easy after our storm damage. Great communication and amazing work!' },
-  { name: 'Melissa T.', place: 'Smyrna', text: 'They handled everything with the insurance company and got our new roof approved quickly. Highly recommend!' },
-  { name: 'Brian K.', place: 'Powder Springs', text: 'Professional, honest, and dependable. Our new roof looks fantastic and the cleanup was spotless.' },
-];
+// Real 5-star Google reviews (see src/data/reviews.ts).
+const homeReviews = pickReviews(0, 3);
 
 const serviceBlurbs: Record<string, string> = {
   'roof-replacement': 'Durable, high-performance roofing installed with expert craftsmanship.',
@@ -114,10 +113,18 @@ export default function HomeScreen() {
       {/* Reviews */}
       <Section style={{ gap: Spacing.lg }}>
         <Heading level={2}>What Homeowners Say</Heading>
+        <Body>Rated 5.0 on Google from 30 reviews.</Body>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md }}>
           {homeReviews.map((r) => (
-            <ReviewCard key={r.name} {...r} />
+            <ReviewCard key={r.name} name={r.name} place={r.service ?? 'Google Review'} text={r.text} />
           ))}
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          <OrangeButton
+            label="Read All 30 Google Reviews"
+            variant="outline"
+            onPress={() => Linking.openURL(Site.googleReviewsUrl)}
+          />
         </View>
       </Section>
 

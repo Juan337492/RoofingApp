@@ -7,6 +7,7 @@ import { FaqAccordion, ReviewCard, StatBlock } from '@/components/sections';
 import { Body, CallButton, CheckItem, Chip, Heading, Section } from '@/components/ui';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { getLocation, getNearby, locations } from '@/data/locations';
+import { pickReviews } from '@/data/reviews';
 
 export function generateStaticParams(): { city: string }[] {
   return locations.map((l) => ({ city: l.slug }));
@@ -19,6 +20,10 @@ export default function LocationScreen() {
   if (!location) {
     return <Redirect href="/" />;
   }
+
+  // Real Google reviews, rotated so each city page shows a different pair.
+  const cityIndex = locations.findIndex((l) => l.slug === location.slug);
+  const cityReviews = pickReviews(cityIndex * 2, 2);
 
   return (
     <Screen ctaTitle={`Storm Damage in ${location.city}? We\u2019re Here to Help`}>
@@ -78,10 +83,11 @@ export default function LocationScreen() {
       </Section>
 
       <Section style={{ gap: Spacing.lg }}>
-        <Heading level={2}>Reviews from {location.city} Homeowners</Heading>
+        <Heading level={2}>What Homeowners Say</Heading>
+        <Body>Real reviews from our Google Business Profile — rated 5.0 from 30 reviews.</Body>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md }}>
-          {location.reviews.map((r) => (
-            <ReviewCard key={r.name} name={r.name} place={`${r.neighborhood}, ${location.city}`} text={r.text} />
+          {cityReviews.map((r) => (
+            <ReviewCard key={r.name} name={r.name} place={r.service ?? 'Google Review'} text={r.text} />
           ))}
         </View>
       </Section>
