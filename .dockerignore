@@ -1,0 +1,10 @@
+node_modules
+dist
+.expo
+.git
+.claude
+.vscode
+mockups
+expo-go-qr.png
+Dockerfile
+fly.toml
