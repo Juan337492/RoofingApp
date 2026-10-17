@@ -1,4 +1,5 @@
 import { useEvent } from 'expo';
+import { Image } from 'expo-image';
 import { usePathname } from 'expo-router';
 import { useVideoPlayer, VideoView, type VideoPlayer } from 'expo-video';
 import { useEffect, useState } from 'react';
@@ -76,6 +77,8 @@ export function HeroVideo() {
     video.loop = true;
     video.muted = true;
     video.volume = 0.8;
+    // Progress events tell us when real frames are on screen (see the poster below).
+    video.timeUpdateEventInterval = 0.25;
     if (!prefersReducedMotion()) {
       video.play();
     }
@@ -109,6 +112,17 @@ export function HeroVideo() {
     };
   }, [pathname, player]);
 
+  // Show a still frame until the video is visibly playing. In-app browsers
+  // (Instagram, Facebook) block autoplay and the 244 MB file loads slowly on
+  // mobile, so without this visitors see an empty black box.
+  const { currentTime } = useEvent(player, 'timeUpdate', { currentTime: 0, currentLiveTimestamp: null, currentOffsetFromLive: null, bufferedPosition: 0 });
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    if (!started && currentTime > 0) {
+      setStarted(true);
+    }
+  }, [currentTime, started]);
+
   // Explicit height from measured width: static web rendering can report a
   // zero width on first load, so fall back to a phone-sized frame.
   const height = (width || 390) * (9 / 16);
@@ -126,6 +140,14 @@ export function HeroVideo() {
           The transform sits on a wrapper because VideoView drops it on web. */}
       <View style={{ width: '100%', height: '100%', transform: [{ scale: 1.19 }] }}>
         <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" nativeControls={false} playsInline />
+        {!started ? (
+          <Image
+            source={require('../../assets/images/hero-poster.jpg')}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+            contentFit="cover"
+            accessibilityLabel="The Dynamic Roofing crew in front of a client's home"
+          />
+        ) : null}
       </View>
       <Controls player={player} />
     </View>
