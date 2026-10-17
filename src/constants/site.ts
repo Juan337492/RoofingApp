@@ -8,8 +8,18 @@ export const Site = {
   phoneDisplay: '(404) 784-9030',
   phoneHref: 'tel:+14047849030',
   email: 'Dynamic.rcllc@gmail.com',
-  // TODO: Replace with the full street address before launch.
+  /** Canonical origin: www and fly.dev redirect or point here. */
+  url: 'https://dynamicroofingandconstruction.us',
+  // TODO: Replace with the full street address before launch, matching the
+  // Google Business Profile exactly, and fill in streetAddress below.
   address: 'Dallas, GA 30157',
+  postalAddress: {
+    streetAddress: '',
+    addressLocality: 'Dallas',
+    addressRegion: 'GA',
+    postalCode: '30157',
+    addressCountry: 'US',
+  },
   calendlyUrl: 'https://calendly.com/dynamic-rcllc/roof',
   heroVideoUrl: 'https://media.dynamicroofingandconstruction.us/Roofing.mp4',
   googleReviewsUrl: 'https://share.google/Mph05eVHfJiXqQHXq',

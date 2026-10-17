@@ -18,9 +18,9 @@ export const locations: Location[] = [
       'Dynamic Roofing is proud to be the trusted roofing contractor for homeowners throughout Powder Springs. From sudden storm damage to full roof replacements, we deliver high-quality workmanship and help you navigate the insurance process every step of the way.',
     neighborhoods: ['Silver Springs Village', 'Country Walk', 'Westfork', 'Wildflower Estates', 'Powder Springs Park'],
     projects: [
-      { neighborhood: 'Silver Springs Village', type: 'Roof Replacement', description: 'Full roof replacement with GAF Timberline HDZ architectural shingles after hail damage.' },
-      { neighborhood: 'Country Walk', type: 'Storm Damage Repair', description: 'Wind damage repair and shingle replacement, fully covered by insurance.' },
-      { neighborhood: 'Westfork', type: 'Roof Replacement', description: 'Complete tear-off and replacement with upgraded ridge ventilation.' },
+      { neighborhood: 'Silver Springs Village', type: 'Roof replacement', description: 'Full roof replacement with GAF Timberline HDZ architectural shingles after hail damage.' },
+      { neighborhood: 'Country Walk', type: 'Storm damage repair', description: 'Wind damage repair and shingle replacement, fully covered by insurance.' },
+      { neighborhood: 'Westfork', type: 'Roof replacement', description: 'Complete tear-off and replacement with upgraded ridge ventilation.' },
     ],
     stats: [
       { value: '14', label: 'hail events since 2020' },
@@ -29,7 +29,7 @@ export const locations: Location[] = [
     ],
     faqs: [
       { question: 'Does Dynamic Roofing offer free inspections in Powder Springs?', answer: 'Yes — every inspection in Powder Springs is completely free and includes a full photo report.' },
-      { question: 'How fast can you respond after a storm?', answer: 'We are based right here in Powder Springs, so we can typically inspect within 24 hours of a storm, with emergency tarping available same-day.' },
+      { question: 'How fast can you respond after a storm?', answer: 'We are based next door in Dallas, GA, so we can typically inspect within 24 hours of a storm, with emergency tarping available same-day.' },
       { question: 'Do you help with insurance claims?', answer: 'Absolutely. We document the damage, help you file, and meet the adjuster on your roof so nothing gets missed.' },
     ],
   },
@@ -40,9 +40,9 @@ export const locations: Location[] = [
       'From historic homes near Marietta Square to newer builds in East Cobb, Dynamic Roofing brings storm damage expertise and insurance claim support to homeowners across Marietta.',
     neighborhoods: ['East Cobb', 'Marietta Square', 'West Side', 'Sandy Plains', 'Whitlock Heights'],
     projects: [
-      { neighborhood: 'East Cobb', type: 'Roof Replacement', description: 'GAF Timberline HDZ replacement following a wind event, approved through insurance.' },
-      { neighborhood: 'Whitlock Heights', type: 'Roof Repair', description: 'Flashing and valley repair on a historic-district home.' },
-      { neighborhood: 'Sandy Plains', type: 'Storm Damage Repair', description: 'Hail damage restoration including gutters and downspouts.' },
+      { neighborhood: 'East Cobb', type: 'Roof replacement', description: 'GAF Timberline HDZ replacement following a wind event, approved through insurance.' },
+      { neighborhood: 'Whitlock Heights', type: 'Roof repair', description: 'Flashing and valley repair on a historic-district home.' },
+      { neighborhood: 'Sandy Plains', type: 'Storm damage repair', description: 'Hail damage restoration including gutters and downspouts.' },
     ],
     stats: [
       { value: '12', label: 'hail events since 2020' },
@@ -61,9 +61,9 @@ export const locations: Location[] = [
       'Smyrna homeowners trust Dynamic Roofing for fast storm response, quality roof replacements, and honest inspections — from the Market Village area to Vinings border neighborhoods.',
     neighborhoods: ['Market Village', 'Williams Park', 'Forest Hills', 'Vinings Estates', 'Belmont'],
     projects: [
-      { neighborhood: 'Williams Park', type: 'Roof Replacement', description: 'Complete replacement with Weathered Wood Timberline HDZ shingles.' },
-      { neighborhood: 'Vinings Estates', type: 'Roof Repair', description: 'Leak diagnosis and chimney flashing rebuild.' },
-      { neighborhood: 'Belmont', type: 'Storm Damage Repair', description: 'Wind-lifted shingle replacement handled through insurance.' },
+      { neighborhood: 'Williams Park', type: 'Roof replacement', description: 'Complete replacement with Weathered Wood Timberline HDZ shingles.' },
+      { neighborhood: 'Vinings Estates', type: 'Roof repair', description: 'Leak diagnosis and chimney flashing rebuild.' },
+      { neighborhood: 'Belmont', type: 'Storm damage repair', description: 'Wind-lifted shingle replacement handled through insurance.' },
     ],
     stats: [
       { value: '11', label: 'hail events since 2020' },
@@ -82,9 +82,9 @@ export const locations: Location[] = [
       'Dynamic Roofing serves Douglasville homeowners with storm damage restoration, roof replacement, and free inspections — with deep experience in the hail corridors along the I-20 west side.',
     neighborhoods: ['Chapel Hills', 'Anneewakee Trails', 'Brookmont', 'Stewart Mill', 'Arbor Station'],
     projects: [
-      { neighborhood: 'Chapel Hills', type: 'Roof Replacement', description: 'Golf-course community replacement with upgraded impact-resistant shingles.' },
-      { neighborhood: 'Anneewakee Trails', type: 'Storm Damage Repair', description: 'Hail claim restoration including roof, gutters, and window wraps.' },
-      { neighborhood: 'Brookmont', type: 'Roof Inspection', description: 'Pre-sale inspection and certification for a home closing.' },
+      { neighborhood: 'Chapel Hills', type: 'Roof replacement', description: 'Golf-course community replacement with upgraded impact-resistant shingles.' },
+      { neighborhood: 'Anneewakee Trails', type: 'Storm damage repair', description: 'Hail claim restoration including roof, gutters, and window wraps.' },
+      { neighborhood: 'Brookmont', type: 'Roof inspection', description: 'Pre-sale inspection and certification for a home closing.' },
     ],
     stats: [
       { value: '13', label: 'hail events since 2020' },
@@ -103,9 +103,9 @@ export const locations: Location[] = [
       'Austell homeowners count on Dynamic Roofing for responsive storm damage service and quality replacements — minutes away from our Powder Springs home base.',
     neighborhoods: ['Legacy Park', 'Silver Comet Trail area', 'Clarkdale', 'Sweetwater', 'Anderson Mill'],
     projects: [
-      { neighborhood: 'Legacy Park', type: 'Roof Replacement', description: 'Full replacement with Charcoal Timberline HDZ after wind damage.' },
-      { neighborhood: 'Clarkdale', type: 'Roof Repair', description: 'Storm-lifted ridge cap and pipe boot replacement.' },
-      { neighborhood: 'Sweetwater', type: 'Storm Damage Repair', description: 'Insurance-approved hail restoration with new gutters.' },
+      { neighborhood: 'Legacy Park', type: 'Roof replacement', description: 'Full replacement with Charcoal Timberline HDZ after wind damage.' },
+      { neighborhood: 'Clarkdale', type: 'Roof repair', description: 'Storm-lifted ridge cap and pipe boot replacement.' },
+      { neighborhood: 'Sweetwater', type: 'Storm damage repair', description: 'Insurance-approved hail restoration with new gutters.' },
     ],
     stats: [
       { value: '10', label: 'hail events since 2020' },
@@ -113,7 +113,7 @@ export const locations: Location[] = [
       { value: '$500K+', label: 'in approved insurance claims' },
     ],
     faqs: [
-      { question: 'How quickly can you get to Austell?', answer: 'We are based next door in Powder Springs — same-day visits are often possible.' },
+      { question: 'How quickly can you get to Austell?', answer: 'We are based nearby in Dallas, GA — same-day visits are often possible.' },
       { question: 'Do you handle emergency tarping?', answer: 'Yes, we offer emergency tarping to stop active leaks while your claim is processed.' },
     ],
   },
@@ -124,9 +124,9 @@ export const locations: Location[] = [
       'Fast-growing Dallas and Paulding County neighborhoods trust Dynamic Roofing for storm inspections, insurance claim help, and quality roof replacements built to last.',
     neighborhoods: ['Seven Hills', 'The Georgian', 'Ivey Township', 'Hiram border', 'Downtown Dallas'],
     projects: [
-      { neighborhood: 'Seven Hills', type: 'Roof Replacement', description: 'Hail claim replacement with Pewter Gray Timberline HDZ.' },
-      { neighborhood: 'The Georgian', type: 'Storm Damage Repair', description: 'Wind damage restoration coordinated with the HOA.' },
-      { neighborhood: 'Ivey Township', type: 'Roof Inspection', description: 'Free post-storm inspection — no damage found, homeowner given all-clear report.' },
+      { neighborhood: 'Seven Hills', type: 'Roof replacement', description: 'Hail claim replacement with Pewter Gray Timberline HDZ.' },
+      { neighborhood: 'The Georgian', type: 'Storm damage repair', description: 'Wind damage restoration coordinated with the HOA.' },
+      { neighborhood: 'Ivey Township', type: 'Roof inspection', description: 'Free post-storm inspection — no damage found, homeowner given all-clear report.' },
     ],
     stats: [
       { value: '15', label: 'hail events since 2020' },
@@ -145,9 +145,9 @@ export const locations: Location[] = [
       'From lakeside homes to established neighborhoods off Highway 92, Dynamic Roofing brings quality roof replacement and storm damage expertise to Acworth.',
     neighborhoods: ['Lake Acworth', 'Brookstone', 'Centennial Lakes', 'Bentwater', 'Downtown Acworth'],
     projects: [
-      { neighborhood: 'Brookstone', type: 'Roof Replacement', description: 'Golf community replacement with upgraded ventilation and Weathered Wood shingles.' },
-      { neighborhood: 'Centennial Lakes', type: 'Storm Damage Repair', description: 'Hail restoration approved through insurance, completed in one day.' },
-      { neighborhood: 'Lake Acworth', type: 'Roof Repair', description: 'Wind-damage repair on a lakefront home with steep architectural roofline.' },
+      { neighborhood: 'Brookstone', type: 'Roof replacement', description: 'Golf community replacement with upgraded ventilation and Weathered Wood shingles.' },
+      { neighborhood: 'Centennial Lakes', type: 'Storm damage repair', description: 'Hail restoration approved through insurance, completed in one day.' },
+      { neighborhood: 'Lake Acworth', type: 'Roof repair', description: 'Wind-damage repair on a lakefront home with steep architectural roofline.' },
     ],
     stats: [
       { value: '11', label: 'hail events since 2020' },
@@ -166,9 +166,9 @@ export const locations: Location[] = [
       'Kennesaw homeowners choose Dynamic Roofing for honest inspections, storm damage restoration, and roof replacements done right — from Kennesaw Mountain to Town Center.',
     neighborhoods: ['Kennesaw Mountain', 'Legacy Park', 'Blue Springs', 'Pinetree', 'Town Center area'],
     projects: [
-      { neighborhood: 'Kennesaw Mountain', type: 'Roof Replacement', description: 'Full tear-off and replacement with Charcoal Timberline HDZ.' },
-      { neighborhood: 'Pinetree', type: 'Roof Repair', description: 'Valley and flashing repair on a golf-course home.' },
-      { neighborhood: 'Blue Springs', type: 'Storm Damage Repair', description: 'Wind and hail restoration fully covered by the homeowner\u2019s policy.' },
+      { neighborhood: 'Kennesaw Mountain', type: 'Roof replacement', description: 'Full tear-off and replacement with Charcoal Timberline HDZ.' },
+      { neighborhood: 'Pinetree', type: 'Roof repair', description: 'Valley and flashing repair on a golf-course home.' },
+      { neighborhood: 'Blue Springs', type: 'Storm damage repair', description: 'Wind and hail restoration fully covered by the homeowner\u2019s policy.' },
     ],
     stats: [
       { value: '12', label: 'hail events since 2020' },

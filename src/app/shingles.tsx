@@ -12,7 +12,7 @@ export default function ShinglesScreen() {
   return (
     <Screen ctaTitle="Found a Shingle You Love? Get a Free Quote">
       <Head>
-        <title>Compare GAF Shingles | Dynamic Roofing | Powder Springs, GA</title>
+        <title>Compare GAF Shingles | Dynamic Roofing | Dallas, GA</title>
         <meta
           name="description"
           content="Compare popular GAF shingles side by side and explore Timberline HDZ colors and features. Free quotes from your local GAF certified contractor."

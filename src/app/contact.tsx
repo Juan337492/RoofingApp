@@ -111,7 +111,7 @@ export default function ContactScreen() {
   return (
     <Screen ctaTitle="Prefer to Talk? Call Us Now">
       <Head>
-        <title>Contact Us | Dynamic Roofing | Powder Springs, GA</title>
+        <title>Contact Us | Dynamic Roofing | Dallas, GA</title>
         <meta
           name="description"
           content="Contact Dynamic Roofing and Construction for a free roof inspection. Call (404) 784-9030, send a message, or schedule online."

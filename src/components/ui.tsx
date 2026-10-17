@@ -1,23 +1,86 @@
-import { Link, type Href } from 'expo-router';
-import { Linking, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { Link, useRouter, type Href } from 'expo-router';
+import { createContext, useContext } from 'react';
+import {
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  type PressableStateCallbackType,
+  type ViewStyle,
+} from 'react-native';
 
 import { Site } from '@/constants/site';
-import { Colors, Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, Fonts, MaxContentWidth, ReadingWidth, Spacing } from '@/constants/theme';
+
+/** react-native-web also reports hover and keyboard focus to Pressable styles. */
+export type InteractionState = PressableStateCallbackType & { hovered?: boolean; focused?: boolean };
+
+/** Light sections flip text to dark ink; components read this instead of taking color props. */
+type Tone = 'dark' | 'light';
+const ToneContext = createContext<Tone>('dark');
+export const useTone = () => useContext(ToneContext);
+
+export function useIsDesktop() {
+  return useWindowDimensions().width >= 820;
+}
+
+/**
+ * A Pressable that renders a real <a href> on web and navigates client-side.
+ * Used instead of <Link asChild>, whose Slot drops Pressable style functions
+ * and render-function children.
+ */
+export function PressableLink({
+  href,
+  style,
+  children,
+  onNavigate,
+}: {
+  href: Href;
+  style?: ViewStyle | ((state: InteractionState) => ViewStyle | (ViewStyle | false | undefined)[]);
+  children: React.ReactNode | ((state: InteractionState) => React.ReactNode);
+  onNavigate?: () => void;
+}) {
+  const router = useRouter();
+  const url = Link.resolveHref(href);
+  return (
+    <Pressable
+      role="link"
+      // react-native-web renders a View with href as an anchor tag.
+      {...({ href: url } as object)}
+      onPress={(event) => {
+        // Let modified clicks (new tab, etc.) fall through to the browser.
+        const native = event?.nativeEvent as unknown as MouseEvent | undefined;
+        if (native && (native.metaKey || native.ctrlKey || native.shiftKey || native.button === 1)) {
+          return;
+        }
+        event?.preventDefault?.();
+        onNavigate?.();
+        router.push(href);
+      }}
+      style={style as never}>
+      {children as never}
+    </Pressable>
+  );
+}
 
 export function Heading({ children, level = 2, style }: { children: React.ReactNode; level?: 1 | 2 | 3; style?: object }) {
-  const sizes = { 1: 34, 2: 26, 3: 18 } as const;
+  const tone = useTone();
+  const isDesktop = useIsDesktop();
+  const sizes = isDesktop ? ({ 1: 56, 2: 38, 3: 23 } as const) : ({ 1: 38, 2: 30, 3: 21 } as const);
   return (
     <Text
       role="heading"
       aria-level={level}
       style={[
         {
-          fontFamily: Fonts.heading,
+          fontFamily: level === 3 ? Fonts.headingMedium : Fonts.heading,
           fontSize: sizes[level],
-          lineHeight: sizes[level] * 1.15,
-          color: Colors.white,
-          textTransform: 'uppercase',
-          letterSpacing: 0.5,
+          lineHeight: sizes[level] * (level === 3 ? 1.25 : 1.1),
+          letterSpacing: 0.4,
+          color: tone === 'light' ? Colors.ink : Colors.white,
+          maxWidth: level === 3 ? undefined : 820,
         },
         style,
       ]}>
@@ -27,7 +90,22 @@ export function Heading({ children, level = 2, style }: { children: React.ReactN
 }
 
 export function Body({ children, style }: { children: React.ReactNode; style?: object }) {
-  return <Text style={[{ color: Colors.textSecondary, fontSize: 15, lineHeight: 23 }, style]}>{children}</Text>;
+  const tone = useTone();
+  return (
+    <Text
+      style={[
+        {
+          fontFamily: Fonts.body,
+          color: tone === 'light' ? Colors.inkSecondary : Colors.textSecondary,
+          fontSize: 17,
+          lineHeight: 27,
+          maxWidth: ReadingWidth,
+        },
+        style,
+      ]}>
+      {children}
+    </Text>
+  );
 }
 
 export function OrangeButton({
@@ -40,45 +118,66 @@ export function OrangeButton({
   label: string;
   onPress?: () => void;
   href?: Href;
-  variant?: 'filled' | 'outline' | 'white';
+  variant?: 'filled' | 'outline' | 'white' | 'dark';
   style?: ViewStyle;
 }) {
-  const inner = (pressed: boolean) => (
-    <View
-      style={[
-        styles.button,
-        variant === 'filled' && { backgroundColor: pressed ? Colors.orangeDark : Colors.orange },
-        variant === 'outline' && { borderWidth: 2, borderColor: Colors.white, backgroundColor: pressed ? '#FFFFFF22' : 'transparent' },
-        variant === 'white' && { backgroundColor: pressed ? '#E8E8E8' : Colors.white },
-        style,
-      ]}>
-      <Text
-        style={{
-          fontFamily: Fonts.headingMedium,
-          textTransform: 'uppercase',
-          letterSpacing: 1,
-          fontSize: 14,
-          color: variant === 'white' ? Colors.orange : Colors.white,
-        }}>
-        {label}
-      </Text>
-    </View>
+  const tone = useTone();
+  const outlineColor = tone === 'light' ? Colors.ink : Colors.white;
+
+  const buttonStyle = (state: InteractionState): ViewStyle[] => {
+    const active = state.pressed || state.hovered;
+    return [
+      styles.button,
+      variant === 'filled' && { backgroundColor: active ? Colors.orangeDark : Colors.orange },
+      variant === 'outline' && {
+        borderWidth: 2,
+        borderColor: outlineColor,
+        backgroundColor: active ? (tone === 'light' ? '#1C1F2214' : '#FFFFFF1A') : 'transparent',
+      },
+      variant === 'white' && { backgroundColor: active ? '#E8E8E8' : Colors.white },
+      variant === 'dark' && { backgroundColor: active ? '#000000' : Colors.ink },
+      state.focused && styles.focusRing,
+      style ?? {},
+    ].filter(Boolean) as ViewStyle[];
+  };
+
+  const label_ = (
+    <Text
+      style={{
+        fontFamily: Fonts.bodyMedium,
+        fontSize: 16,
+        color: variant === 'white' ? Colors.orange : variant === 'outline' ? outlineColor : Colors.white,
+      }}>
+      {label}
+    </Text>
   );
 
   if (href) {
     return (
-      <Link href={href} asChild>
-        <Pressable>{({ pressed }) => inner(pressed)}</Pressable>
-      </Link>
+      <PressableLink href={href} style={buttonStyle}>
+        {label_}
+      </PressableLink>
     );
   }
-  return <Pressable onPress={onPress}>{({ pressed }) => inner(pressed)}</Pressable>;
+  return (
+    <Pressable role="button" onPress={onPress} style={buttonStyle}>
+      {label_}
+    </Pressable>
+  );
 }
 
-export function CallButton({ variant = 'filled', label, style }: { variant?: 'filled' | 'outline' | 'white'; label?: string; style?: ViewStyle }) {
+export function CallButton({
+  variant = 'filled',
+  label,
+  style,
+}: {
+  variant?: 'filled' | 'outline' | 'white' | 'dark';
+  label?: string;
+  style?: ViewStyle;
+}) {
   return (
     <OrangeButton
-      label={label ?? 'Free Roof Inspection'}
+      label={label ?? 'Book a free inspection'}
       variant={variant}
       style={style}
       onPress={() => Linking.openURL(Site.phoneHref)}
@@ -86,64 +185,132 @@ export function CallButton({ variant = 'filled', label, style }: { variant?: 'fi
   );
 }
 
-/** Centers page content and constrains width on large (desktop/web) screens. */
-export function Section({ children, alt, style }: { children: React.ReactNode; alt?: boolean; style?: ViewStyle }) {
+/**
+ * The signature element: the phone number set large, like the lettering on a
+ * contractor's truck door. Tapping it calls.
+ */
+export function PhoneLettering({ size, color }: { size?: number; color?: string }) {
+  const tone = useTone();
+  const isDesktop = useIsDesktop();
+  const fontSize = size ?? (isDesktop ? 64 : 44);
   return (
-    <View style={{ backgroundColor: alt ? Colors.surface : Colors.background }}>
-      <View style={[{ width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', paddingHorizontal: Spacing.lg, paddingVertical: Spacing.xl }, style]}>
-        {children}
-      </View>
-    </View>
+    <Pressable
+      role="link"
+      aria-label={`Call ${Site.phoneDisplay}`}
+      onPress={() => Linking.openURL(Site.phoneHref)}
+      style={(state: InteractionState) => [{ alignSelf: 'flex-start', borderRadius: 4 }, state.focused && styles.focusRing]}>
+      {(state: InteractionState) => (
+        <Text
+          style={{
+            fontFamily: Fonts.display,
+            fontSize,
+            lineHeight: fontSize * 1.05,
+            color: color ?? (state.hovered || state.pressed ? Colors.orangeDark : tone === 'light' ? Colors.ink : Colors.orange),
+            fontVariant: ['tabular-nums'],
+          }}>
+          {Site.phoneDisplay}
+        </Text>
+      )}
+    </Pressable>
   );
 }
 
-export function Stars() {
+const sectionBackgrounds = {
+  dark: Colors.background,
+  raised: Colors.surface,
+  light: Colors.flashing,
+  orange: Colors.orange,
+  /** For sections layered over their own background (e.g. the shingle band). */
+  transparent: 'transparent',
+} as const;
+
+/** Centers page content and constrains width on large (desktop/web) screens. */
+export function Section({
+  children,
+  alt,
+  variant,
+  style,
+}: {
+  children: React.ReactNode;
+  /** @deprecated use variant="raised" */
+  alt?: boolean;
+  variant?: keyof typeof sectionBackgrounds;
+  style?: ViewStyle;
+}) {
+  const isDesktop = useIsDesktop();
+  const v = variant ?? (alt ? 'raised' : 'dark');
   return (
-    <Text style={{ color: Colors.gold, fontSize: 16, letterSpacing: 2 }} aria-label="5 out of 5 stars">
-      {'\u2605\u2605\u2605\u2605\u2605'}
+    <ToneContext.Provider value={v === 'light' ? 'light' : 'dark'}>
+      <View style={{ backgroundColor: sectionBackgrounds[v] }}>
+        <View
+          style={[
+            {
+              width: '100%',
+              maxWidth: MaxContentWidth,
+              alignSelf: 'center',
+              paddingHorizontal: isDesktop ? Spacing.xl : Spacing.lg,
+              paddingVertical: isDesktop ? Spacing.xxxl : Spacing.xxl,
+            },
+            style,
+          ]}>
+          {children}
+        </View>
+      </View>
+    </ToneContext.Provider>
+  );
+}
+
+export function Stars({ size = 16 }: { size?: number }) {
+  return (
+    <Text style={{ color: Colors.gold, fontSize: size, letterSpacing: 2 }} aria-label="5 out of 5 stars">
+      {'★★★★★'}
     </Text>
   );
 }
 
+/** A city or related page link, set as plain underlined text rather than a pill. */
 export function Chip({ label, href }: { label: string; href: Href }) {
+  const tone = useTone();
   return (
-    <Link href={href} asChild>
-      <Pressable>
-        {({ pressed }) => (
-          <View
-            style={{
-              borderWidth: 1.5,
-              borderColor: Colors.orange,
-              borderRadius: 999,
-              paddingHorizontal: 16,
-              paddingVertical: 8,
-              backgroundColor: pressed ? Colors.orange : 'transparent',
-            }}>
-            <Text style={{ color: Colors.white, fontFamily: Fonts.headingMedium, fontSize: 13, textTransform: 'uppercase', letterSpacing: 1 }}>
-              {label}
-            </Text>
-          </View>
-        )}
-      </Pressable>
-    </Link>
+    <PressableLink href={href} style={(state) => [{ paddingVertical: 6, borderRadius: 2 }, state.focused && styles.focusRing]}>
+      {(state: InteractionState) => (
+        <Text
+          style={{
+            fontFamily: Fonts.headingMedium,
+            fontSize: 22,
+            color: state.hovered || state.pressed ? Colors.orange : tone === 'light' ? Colors.ink : Colors.white,
+            textDecorationLine: 'underline',
+            textDecorationColor: Colors.orange,
+          }}>
+          {label}
+        </Text>
+      )}
+    </PressableLink>
   );
 }
 
 export function CheckItem({ text }: { text: string }) {
+  const tone = useTone();
   return (
-    <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
-      <Text style={{ color: Colors.orange, fontSize: 16, lineHeight: 22 }}>{'\u2713'}</Text>
-      <Body style={{ flex: 1, color: Colors.white }}>{text}</Body>
+    <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+      <Text style={{ color: Colors.orange, fontSize: 17, lineHeight: 27, fontFamily: Fonts.bodySemiBold }}>{'✓'}</Text>
+      <Body style={{ flex: 1, color: tone === 'light' ? Colors.ink : Colors.white }}>{text}</Body>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    paddingHorizontal: 22,
-    paddingVertical: 13,
-    borderRadius: 6,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  focusRing: {
+    outlineColor: Colors.orange,
+    outlineStyle: 'solid',
+    outlineWidth: 3,
+    outlineOffset: 3,
+  } as ViewStyle,
 });

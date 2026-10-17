@@ -23,7 +23,7 @@ export default function ServiceScreen() {
   return (
     <Screen ctaTitle="Get Your Free Roof Inspection">
       <Head>
-        <title>{`${service.name} | Dynamic Roofing | Powder Springs, GA`}</title>
+        <title>{`${service.name} | Dynamic Roofing | Dallas, GA`}</title>
         <meta name="description" content={service.intro} />
       </Head>
       <Section style={{ paddingVertical: Spacing.xxl, gap: Spacing.md }}>

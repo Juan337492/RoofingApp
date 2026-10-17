@@ -12,20 +12,20 @@ export type Service = {
 };
 
 const defaultProcess = [
-  { title: 'Free Inspection', description: 'We thoroughly inspect your roof, document any damage, and give you honest recommendations.' },
-  { title: 'Materials & Quote', description: 'We help you choose the right materials and provide a detailed, transparent quote with no surprises.' },
-  { title: 'Installation Day', description: 'Our crew shows up on time, works efficiently, and treats your property with care and respect.' },
-  { title: 'Final Walkthrough', description: 'We inspect every detail with you to make sure the work meets our high standards before we leave.' },
+  { title: 'Free inspection', description: 'We thoroughly inspect your roof, document any damage, and give you honest recommendations.' },
+  { title: 'Materials and quote', description: 'We help you choose the right materials and provide a detailed, transparent quote with no surprises.' },
+  { title: 'Installation day', description: 'Our crew shows up on time, works efficiently, and treats your property with care and respect.' },
+  { title: 'Final walkthrough', description: 'We inspect every detail with you to make sure the work meets our high standards before we leave.' },
 ];
 
 export const services: Service[] = [
   {
     slug: 'roof-replacement',
-    name: 'Roof Replacement',
-    headline: 'Roof Replacement in Powder Springs & West Metro Atlanta',
+    name: 'Roof replacement',
+    headline: 'Roof replacement in Dallas, GA and west metro Atlanta',
     intro:
       'Durable, high-performance GAF Timberline HDZ roofing systems installed with expert craftsmanship. We handle everything from tear-off to final inspection, and we help you get insurance to cover it when storm damage qualifies.',
-    signsTitle: 'Signs You Need a New Roof',
+    signsTitle: 'Signs you need a new roof',
     signs: [
       'Missing or curling shingles',
       'Granules collecting in your gutters',
@@ -59,11 +59,11 @@ export const services: Service[] = [
   },
   {
     slug: 'roof-repair',
-    name: 'Roof Repair',
-    headline: 'Fast, Reliable Roof Repair in West Metro Atlanta',
+    name: 'Roof repair',
+    headline: 'Fast, reliable roof repair in west metro Atlanta',
     intro:
       'From leaks and missing shingles to flashing failures and everyday wear, we diagnose the real problem and fix it right the first time — with honest advice on whether a repair or replacement makes more sense.',
-    signsTitle: 'Signs Your Roof Needs Repair',
+    signsTitle: 'Signs your roof needs repair',
     signs: [
       'Active leaks or water stains after rain',
       'A few missing, cracked, or lifted shingles',
@@ -92,11 +92,11 @@ export const services: Service[] = [
   },
   {
     slug: 'storm-damage-roofing',
-    name: 'Storm Damage',
-    headline: 'Storm & Hail Damage Roofing Experts',
+    name: 'Storm damage',
+    headline: 'Storm and hail damage roofing',
     intro:
       'West metro Atlanta takes real hail and wind every year. We are storm damage specialists: free post-storm inspections, complete photo documentation, emergency tarping, and full restoration — with your insurance claim handled for you.',
-    signsTitle: 'Signs of Storm Damage',
+    signsTitle: 'Signs of storm damage',
     signs: [
       'Hail hit your area recently — even small hail damages shingles',
       'Missing or creased shingles after high winds',
@@ -106,10 +106,10 @@ export const services: Service[] = [
       'Water intrusion after a storm',
     ],
     process: [
-      { title: 'Free Storm Inspection', description: 'We inspect and photo-document every slope, gutter, and vent for hail and wind damage.' },
-      { title: 'Claim Filed & Supported', description: 'We help you file the claim and meet the insurance adjuster on your roof so nothing gets missed.' },
-      { title: 'Approval & Materials', description: 'Once approved, you pick your shingle color and we schedule your build.' },
-      { title: 'Roof Restored', description: 'Your roof is repaired or replaced with quality you can trust, typically in one day.' },
+      { title: 'Free storm inspection', description: 'We inspect and photo-document every slope, gutter, and vent for hail and wind damage.' },
+      { title: 'Claim filed and supported', description: 'We help you file the claim and meet the insurance adjuster on your roof so nothing gets missed.' },
+      { title: 'Approval and materials', description: 'Once approved, you pick your shingle color and we schedule your build.' },
+      { title: 'Roof restored', description: 'Your roof is repaired or replaced with quality you can trust, typically in one day.' },
     ],
     faqs: [
       {
@@ -129,11 +129,11 @@ export const services: Service[] = [
   },
   {
     slug: 'insurance-claims',
-    name: 'Insurance Claims',
-    headline: 'Insurance Claims Made Easy',
+    name: 'Insurance claims',
+    headline: 'Insurance claims, handled for you',
     intro:
       'We work for you, not the insurance company. From documentation to adjuster meetings to final invoice, we manage the entire claim process so your storm-damaged roof gets covered the way your policy promises.',
-    signsTitle: 'When to File a Claim',
+    signsTitle: 'When to file a claim',
     signs: [
       'A hail or wind event hit your neighborhood',
       'An inspection found storm-related damage',
@@ -143,9 +143,9 @@ export const services: Service[] = [
       'Your shingles show impact bruising',
     ],
     process: [
-      { title: 'Free Inspection', description: 'We inspect the damage and document everything with photos and measurements.' },
-      { title: 'We Handle Your Claim', description: 'We help you file, then meet your adjuster on the roof to walk through every item of damage.' },
-      { title: 'Roof Restored', description: 'Once approved, we complete the work to code and bill the insurance company directly.' },
+      { title: 'Free inspection', description: 'We inspect the damage and document everything with photos and measurements.' },
+      { title: 'We handle your claim', description: 'We help you file, then meet your adjuster on the roof to walk through every item of damage.' },
+      { title: 'Roof restored', description: 'Once approved, we complete the work to code and bill the insurance company directly.' },
     ],
     faqs: [
       {
@@ -167,10 +167,10 @@ export const services: Service[] = [
   {
     slug: 'gutters',
     name: 'Gutters',
-    headline: 'Seamless Gutters & Gutter Guards',
+    headline: 'Seamless gutters and gutter guards',
     intro:
       'Protect your foundation, siding, and landscaping with seamless gutters sized and pitched correctly for Georgia rainfall — installed to match your roofline and color scheme.',
-    signsTitle: 'Signs You Need New Gutters',
+    signsTitle: 'Signs you need new gutters',
     signs: [
       'Sagging, separating, or overflowing gutters',
       'Water pooling near the foundation',
@@ -195,10 +195,10 @@ export const services: Service[] = [
   {
     slug: 'siding',
     name: 'Siding',
-    headline: 'Siding Installation & Repair',
+    headline: 'Siding installation and repair',
     intro:
       'Boost curb appeal and weather protection with quality vinyl and fiber-cement siding, color-matched and installed by the same crew standards we bring to every roof.',
-    signsTitle: 'Signs Your Siding Needs Attention',
+    signsTitle: 'Signs your siding needs attention',
     signs: [
       'Cracked, warped, or loose panels',
       'Hail impact marks or holes',
@@ -222,11 +222,11 @@ export const services: Service[] = [
   },
   {
     slug: 'roof-inspection',
-    name: 'Roof Inspection',
-    headline: 'Free Roof Inspections in West Metro Atlanta',
+    name: 'Roof inspection',
+    headline: 'Free roof inspections in west metro Atlanta',
     intro:
       'A professional roof inspection catches small problems before they become expensive ones. Every inspection includes a full photo report and honest recommendations — free, with no obligation.',
-    signsTitle: 'When to Get an Inspection',
+    signsTitle: 'When to get an inspection',
     signs: [
       'After any hail or high-wind event',
       'Before buying or selling a home',
@@ -237,9 +237,9 @@ export const services: Service[] = [
     ],
     process: [
       { title: 'Schedule', description: 'Pick a time that works — most inspections take under an hour.' },
-      { title: 'Full Inspection', description: 'We check shingles, flashing, vents, gutters, and attic ventilation.' },
-      { title: 'Photo Report', description: 'You get a clear photo report of what we found, in plain English.' },
-      { title: 'Honest Advice', description: 'If your roof is fine, we tell you. If not, you get options and pricing.' },
+      { title: 'Full inspection', description: 'We check shingles, flashing, vents, gutters, and attic ventilation.' },
+      { title: 'Photo report', description: 'You get a clear photo report of what we found, in plain English.' },
+      { title: 'Honest advice', description: 'If your roof is fine, we tell you. If not, you get options and pricing.' },
     ],
     faqs: [
       {

@@ -1,146 +1,84 @@
 import { useEvent } from 'expo';
 import { usePathname } from 'expo-router';
 import { useVideoPlayer, VideoView, type VideoPlayer } from 'expo-video';
-import { useEffect, useRef, useState } from 'react';
-import { PanResponder, Pressable, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
 
+import type { InteractionState } from '@/components/ui';
 import { Site } from '@/constants/site';
-import { Colors, Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, Fonts } from '@/constants/theme';
 
-function PlayPauseButton({ player }: { player: VideoPlayer }) {
-  const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
+}
 
+function OverlayButton({ label, accessibilityLabel, onPress }: { label: string; accessibilityLabel: string; onPress: () => void }) {
   return (
     <Pressable
-      onPress={() => (isPlaying ? player.pause() : player.play())}
-      accessibilityLabel={isPlaying ? 'Pause video' : 'Play video'}
-      style={({ pressed }) => ({
-        backgroundColor: pressed ? Colors.orangeDark : Colors.orange,
-        paddingHorizontal: 18,
-        paddingVertical: 10,
-        borderRadius: 6,
-        minWidth: 96,
-        alignItems: 'center',
-      })}>
-      <Text style={{ color: Colors.white, fontFamily: Fonts.headingMedium, fontSize: 13, textTransform: 'uppercase', letterSpacing: 1 }}>
-        {isPlaying ? 'Pause' : 'Play'}
-      </Text>
+      role="button"
+      onPress={onPress}
+      aria-label={accessibilityLabel}
+      style={(state: InteractionState) => [
+        {
+          backgroundColor: state.hovered || state.pressed ? '#000000CC' : '#00000099',
+          paddingHorizontal: 14,
+          paddingVertical: 8,
+          borderRadius: 4,
+        },
+        state.focused && { outlineColor: Colors.orange, outlineStyle: 'solid', outlineWidth: 3, outlineOffset: 2 },
+      ]}>
+      <Text style={{ color: Colors.white, fontFamily: Fonts.bodySemiBold, fontSize: 14 }}>{label}</Text>
     </Pressable>
   );
 }
 
-function VolumeSlider({ player }: { player: VideoPlayer }) {
-  const [muted, setMuted] = useState(true);
-  const [level, setLevel] = useState(0);
-  const levelRef = useRef(0);
-  const lastAudible = useRef(0.8);
-  const trackWidth = useRef(1);
-  const startX = useRef(0);
-
-  const applyVolume = (next: number) => {
-    const clamped = Math.max(0, Math.min(1, next));
-    levelRef.current = clamped;
-    setLevel(clamped);
-    player.volume = clamped;
-    const nowMuted = clamped < 0.01;
-    player.muted = nowMuted;
-    setMuted(nowMuted);
-    if (!nowMuted) {
-      lastAudible.current = clamped;
-    }
-  };
-
-  const pan = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) >= Math.abs(gesture.dy),
-      onPanResponderTerminationRequest: () => false,
-      onPanResponderGrant: (event) => {
-        startX.current = event.nativeEvent.locationX;
-        applyVolume(event.nativeEvent.locationX / trackWidth.current);
-      },
-      onPanResponderMove: (_, gesture) => {
-        applyVolume((startX.current + gesture.dx) / trackWidth.current);
-      },
-    })
-  ).current;
+function Controls({ player }: { player: VideoPlayer }) {
+  const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
+  const { muted } = useEvent(player, 'mutedChange', { muted: player.muted });
 
   return (
-    <>
-      <Pressable
+    <View style={{ position: 'absolute', left: 12, bottom: 12, flexDirection: 'row', gap: 8 }}>
+      <OverlayButton
+        label={isPlaying ? 'Pause' : 'Play'}
+        accessibilityLabel={isPlaying ? 'Pause video' : 'Play video'}
         onPress={() => {
-          if (muted) {
-            applyVolume(lastAudible.current || 0.8);
-          } else {
-            lastAudible.current = levelRef.current || 0.8;
-            applyVolume(0);
+          if (isPlaying) {
+            player.pause();
+            return;
+          }
+          // Pressing Play is a deliberate choice to watch, so play with sound.
+          player.muted = false;
+          player.play();
+        }}
+      />
+      <OverlayButton
+        label={muted ? 'Sound on' : 'Sound off'}
+        accessibilityLabel={muted ? 'Turn sound on' : 'Turn sound off'}
+        onPress={() => {
+          player.muted = !muted;
+          if (muted && !isPlaying) {
+            player.play();
           }
         }}
-        accessibilityLabel={muted ? 'Unmute video' : 'Mute video'}
-        style={({ pressed }) => ({
-          borderWidth: 1.5,
-          borderColor: Colors.orange,
-          backgroundColor: pressed ? Colors.surfaceAlt : Colors.surface,
-          paddingHorizontal: 16,
-          paddingVertical: 10,
-          borderRadius: 6,
-        })}>
-        <Text style={{ color: Colors.white, fontFamily: Fonts.headingMedium, fontSize: 13, textTransform: 'uppercase', letterSpacing: 1 }}>
-          {muted ? 'Unmute' : 'Mute'}
-        </Text>
-      </Pressable>
-
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexGrow: 1, minWidth: 180 }}>
-        <Text style={{ color: Colors.textSecondary, fontFamily: Fonts.headingMedium, fontSize: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
-          Volume
-        </Text>
-        <View
-          onLayout={(event) => {
-            trackWidth.current = Math.max(1, event.nativeEvent.layout.width);
-          }}
-          {...pan.panHandlers}
-          accessibilityRole="adjustable"
-          accessibilityLabel="Volume"
-          style={{ flex: 1, height: 44, justifyContent: 'center' }}>
-          <View style={{ height: 6, borderRadius: 3, backgroundColor: Colors.border, overflow: 'hidden' }}>
-            <View style={{ width: `${level * 100}%`, height: 6, backgroundColor: Colors.orange }} />
-          </View>
-          <View
-            pointerEvents="none"
-            style={{
-              position: 'absolute',
-              left: `${level * 100}%`,
-              marginLeft: -10,
-              width: 20,
-              height: 20,
-              borderRadius: 10,
-              backgroundColor: Colors.orange,
-              borderWidth: 2,
-              borderColor: Colors.white,
-            }}
-          />
-        </View>
-      </View>
-    </>
+      />
+    </View>
   );
 }
 
+/** The crew's own video in a 16:9 frame, muted autoplay with overlaid controls. */
 export function HeroVideo() {
   const pathname = usePathname();
-  const [containerWidth, setContainerWidth] = useState(0);
-  // Keep the wrapper close to the video's native 16:9 ratio so desktop does
-  // not crop the frame. Cap the height to keep the hero from taking over the
-  // entire viewport on very wide displays.
-  // Use a visible mobile-sized fallback until the container reports its real
-  // width; static web rendering can report a zero window width on first load.
-  const width = containerWidth || 390;
-  const height = Math.min(width / (16 / 9), width < 640 ? 240 : 720);
+  const [width, setWidth] = useState(0);
 
   const player = useVideoPlayer(Site.heroVideoUrl, (video) => {
     video.loop = true;
     video.muted = true;
     video.volume = 0.8;
-    video.play();
+    if (!prefersReducedMotion()) {
+      video.play();
+    }
   });
 
   // Stop playback as soon as navigation leaves the home page or the browser
@@ -171,33 +109,25 @@ export function HeroVideo() {
     };
   }, [pathname, player]);
 
+  // Explicit height from measured width: static web rendering can report a
+  // zero width on first load, so fall back to a phone-sized frame.
+  const height = (width || 390) * (9 / 16);
+
   return (
     <View
       onLayout={(event) => {
-        const nextWidth = Math.round(event.nativeEvent.layout.width);
-        if (nextWidth && nextWidth !== containerWidth) {
-          setContainerWidth(nextWidth);
+        const next = Math.round(event.nativeEvent.layout.width);
+        if (next && next !== width) {
+          setWidth(next);
         }
       }}
-      style={{ width: '100%', backgroundColor: Colors.background }}>
-      <View style={{ height, width: '100%', backgroundColor: '#000', overflow: 'hidden' }}>
-        <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="contain" nativeControls={false} playsInline />
+      style={{ width: '100%', height, backgroundColor: '#000', borderRadius: 4, overflow: 'hidden' }}>
+      {/* The source file is pillarboxed (black bars baked in); zoom just enough to crop them.
+          The transform sits on a wrapper because VideoView drops it on web. */}
+      <View style={{ width: '100%', height: '100%', transform: [{ scale: 1.19 }] }}>
+        <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" nativeControls={false} playsInline />
       </View>
-      <View
-        style={{
-          width: '100%',
-          maxWidth: MaxContentWidth,
-          alignSelf: 'center',
-          paddingHorizontal: Spacing.lg,
-          paddingVertical: Spacing.md,
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          gap: Spacing.md,
-        }}>
-        <PlayPauseButton player={player} />
-        <VolumeSlider player={player} />
-      </View>
+      <Controls player={player} />
     </View>
   );
 }
