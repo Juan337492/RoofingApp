@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 
 import { ShingleField } from '@/components/shingle-field';
-import { Body, Heading, OrangeButton, PhoneLettering, Section, Stars, useIsDesktop, useTone, type InteractionState } from '@/components/ui';
+import { Body, firstPaint, Heading, OrangeButton, PhoneLettering, Section, Stars, useIsDesktop, useTone, type InteractionState } from '@/components/ui';
 import { Site } from '@/constants/site';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import type { Faq } from '@/data/services';
@@ -64,6 +64,7 @@ export function TrustBar() {
   return (
     <Section variant="raised" style={{ paddingVertical: Spacing.xl }}>
       <View
+        {...firstPaint('trust-bar')}
         style={{
           flexDirection: isDesktop ? 'row' : 'column',
           alignItems: isDesktop ? 'center' : 'flex-start',
@@ -83,9 +84,9 @@ export function TrustBar() {
             accessibilityLabel="Atlas Pro Plus Gold certified contractor"
           />
         </View>
-        <View style={{ flex: isDesktop ? 1 : undefined, flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? Spacing.xl : Spacing.md }}>
+        <View {...firstPaint('trust-facts')} style={{ flex: isDesktop ? 1 : undefined, flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? Spacing.xl : Spacing.md }}>
           {trustFacts.map((fact) => (
-            <View key={fact.title} style={{ flex: isDesktop ? 1 : undefined, gap: 2 }}>
+            <View key={fact.title} {...firstPaint('trust-fact')} style={{ flex: isDesktop ? 1 : undefined, gap: 2 }}>
               {fact.title === 'rating' ? (
                 <RatingBadge />
               ) : (

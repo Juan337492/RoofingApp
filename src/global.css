@@ -7,3 +7,46 @@
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
 }
+
+/*
+ * First paint on wider screens. The exported HTML is always the phone layout, so
+ * these rules give tagged elements their wide layout until the app takes over and
+ * sets data-hydrated. Values mirror the width checks in the components.
+ */
+@media (min-width: 640px) {
+  html:not([data-hydrated]) [data-fp='header-bar'] { padding-left: 32px !important; padding-right: 32px !important; }
+  html:not([data-hydrated]) [data-fp='header-actions'] { gap: 16px !important; }
+  html:not([data-hydrated]) [data-fp='brand-logo'] { width: 48px !important; height: 48px !important; }
+  html:not([data-hydrated]) [data-fp='brand-name'] { font-size: 24px !important; }
+  html:not([data-hydrated]) [data-fp='call-short'] { display: none !important; }
+  html:not([data-hydrated]) [data-fp='call-full'] { display: flex !important; }
+}
+
+@media (min-width: 820px) {
+  html:not([data-hydrated]) [data-fp='h1'] { font-size: 56px !important; line-height: 61.6px !important; }
+  html:not([data-hydrated]) [data-fp='h2'] { font-size: 38px !important; line-height: 41.8px !important; }
+  html:not([data-hydrated]) [data-fp='h3'] { font-size: 23px !important; line-height: 28.75px !important; }
+  html:not([data-hydrated]) [data-fp='phone-number'] { font-size: 64px !important; line-height: 67.2px !important; }
+
+  html:not([data-hydrated]) [data-fp='section'] { padding: 72px 32px !important; }
+  html:not([data-hydrated]) [data-fp='section-x'] { padding-left: 32px !important; padding-right: 32px !important; }
+  html:not([data-hydrated]) [data-fp='hero-section'] { padding: 56px 32px !important; }
+
+  html:not([data-hydrated]) [data-fp='hero-fade'] > * {
+    background-image: linear-gradient(90deg, rgba(13, 13, 13, 0.97) 0%, rgba(13, 13, 13, 0.9) 40%, rgba(13, 13, 13, 0.3) 62%, rgba(13, 13, 13, 0.05) 100%) !important;
+  }
+  html:not([data-hydrated]) [data-fp='hero-row'] { flex-direction: row !important; gap: 48px !important; }
+  html:not([data-hydrated]) [data-fp='hero-copy'] { flex: 5 1 0% !important; }
+  html:not([data-hydrated]) [data-fp='hero-media'] { flex: 6 1 0% !important; width: auto !important; }
+
+  html:not([data-hydrated]) [data-fp='trust-bar'] { flex-direction: row !important; align-items: center !important; gap: 48px !important; }
+  html:not([data-hydrated]) [data-fp='trust-facts'] { flex: 1 1 0% !important; flex-direction: row !important; gap: 32px !important; }
+  html:not([data-hydrated]) [data-fp='trust-fact'] { flex: 1 1 0% !important; }
+
+  html:not([data-hydrated]) [data-fp='service-row'] { width: 47% !important; }
+}
+
+@media (min-width: 1080px) {
+  html:not([data-hydrated]) [data-fp='desktop-nav'] { display: flex !important; }
+  html:not([data-hydrated]) [data-fp='menu-button'] { display: none !important; }
+}

@@ -71,7 +71,6 @@ function Controls({ player }: { player: VideoPlayer }) {
 /** The crew's own video in a 16:9 frame, muted autoplay with overlaid controls. */
 export function HeroVideo() {
   const pathname = usePathname();
-  const [width, setWidth] = useState(0);
 
   const player = useVideoPlayer(Site.heroVideoUrl, (video) => {
     video.loop = true;
@@ -123,22 +122,12 @@ export function HeroVideo() {
     }
   }, [currentTime, started]);
 
-  // Explicit height from measured width: static web rendering can report a
-  // zero width on first load, so fall back to a phone-sized frame.
-  const height = (width || 390) * (9 / 16);
-
   return (
-    <View
-      onLayout={(event) => {
-        const next = Math.round(event.nativeEvent.layout.width);
-        if (next && next !== width) {
-          setWidth(next);
-        }
-      }}
-      style={{ width: '100%', height, backgroundColor: '#000', borderRadius: 4, overflow: 'hidden' }}>
+    // An aspect ratio, not a measured height, so the frame is the right size before any JavaScript runs.
+    <View style={{ width: '100%', aspectRatio: 16 / 9, backgroundColor: '#000', borderRadius: 4, overflow: 'hidden' }}>
       {/* The source file is pillarboxed (black bars baked in); zoom just enough to crop them.
           The transform sits on a wrapper because VideoView drops it on web. */}
-      <View style={{ width: '100%', height: '100%', transform: [{ scale: 1.19 }] }}>
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, transform: [{ scale: 1.19 }] }}>
         <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" nativeControls={false} playsInline />
         {!started ? (
           <Image

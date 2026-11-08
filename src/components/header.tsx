@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Linking, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { OrangeButton, PressableLink, useLayoutWidth, type InteractionState } from '@/components/ui';
+import { firstPaint, OrangeButton, PressableLink, useLayoutWidth, type InteractionState } from '@/components/ui';
 import { Site } from '@/constants/site';
 import { Colors, Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { services } from '@/data/services';
@@ -43,12 +43,10 @@ function Brand({ compact }: { compact: boolean }) {
       <Pressable
         aria-label="Dynamic Roofing home"
         style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1, minWidth: 0 }}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={{ width: compact ? 40 : 48, height: compact ? 40 : 48 }}
-          contentFit="contain"
-        />
-        <Text numberOfLines={1} style={{ fontFamily: Fonts.display, fontSize: compact ? 20 : 24, color: Colors.white, letterSpacing: 0.3 }}>
+        <View {...(compact ? firstPaint('brand-logo') : {})} style={{ width: compact ? 40 : 48, height: compact ? 40 : 48 }}>
+          <Image source={require('../../assets/images/logo.png')} style={{ width: '100%', height: '100%' }} contentFit="contain" />
+        </View>
+        <Text numberOfLines={1} {...(compact ? firstPaint('brand-name') : {})} style={{ fontFamily: Fonts.display, fontSize: compact ? 20 : 24, color: Colors.white, letterSpacing: 0.3 }}>
           Dynamic Roofing
         </Text>
       </Pressable>
@@ -132,6 +130,16 @@ function NavLink({ label, href, active }: { label: string; href: Href; active: b
   );
 }
 
+function HeaderCallButton({ short }: { short: boolean }) {
+  return (
+    <OrangeButton
+      label={short ? 'Call' : Site.phoneDisplay}
+      onPress={() => Linking.openURL(Site.phoneHref)}
+      style={{ paddingVertical: 10, paddingHorizontal: short ? 18 : 16 }}
+    />
+  );
+}
+
 export function Header() {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
@@ -140,10 +148,13 @@ export function Header() {
   // Below this width the six links no longer fit beside the brand and phone.
   const compact = width < 1080;
   const phone = width < 640;
+  // Width is 0 in the exported HTML. Include both versions of what differs, and let global.css choose.
+  const undecided = width === 0;
 
   return (
     <View style={{ backgroundColor: Colors.background, paddingTop: insets.top, borderBottomWidth: 1, borderBottomColor: Colors.border }}>
       <View
+        {...firstPaint('header-bar')}
         style={{
           width: '100%',
           maxWidth: MaxContentWidth,
@@ -157,22 +168,32 @@ export function Header() {
         }}>
         <Brand compact={phone} />
 
-        {!compact ? (
-          <View role="navigation" style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.lg }}>
+        {!compact || undecided ? (
+          <View
+            role="navigation"
+            {...firstPaint('desktop-nav')}
+            style={{ display: undecided ? 'none' : 'flex', flexDirection: 'row', alignItems: 'center', gap: Spacing.lg }}>
             {primaryLinks.map((item) => (
               <NavLink key={item.label} {...item} active={pathname === item.href} />
             ))}
           </View>
         ) : null}
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: phone ? 12 : Spacing.md, flexShrink: 0 }}>
-          <OrangeButton
-            label={phone ? 'Call' : Site.phoneDisplay}
-            onPress={() => Linking.openURL(Site.phoneHref)}
-            style={{ paddingVertical: 10, paddingHorizontal: phone ? 18 : 16 }}
-          />
+        <View {...firstPaint('header-actions')} style={{ flexDirection: 'row', alignItems: 'center', gap: phone ? 12 : Spacing.md, flexShrink: 0 }}>
+          {undecided ? (
+            <>
+              <View {...firstPaint('call-short')}>
+                <HeaderCallButton short />
+              </View>
+              <View {...firstPaint('call-full')} style={{ display: 'none' }}>
+                <HeaderCallButton short={false} />
+              </View>
+            </>
+          ) : (
+            <HeaderCallButton short={phone} />
+          )}
           {compact ? (
-            <Pressable onPress={() => setMenuOpen(true)} aria-label="Open menu" hitSlop={8} style={{ padding: 4 }}>
+            <Pressable onPress={() => setMenuOpen(true)} aria-label="Open menu" hitSlop={8} {...firstPaint('menu-button')} style={{ padding: 4 }}>
               <HamburgerIcon />
             </Pressable>
           ) : null}

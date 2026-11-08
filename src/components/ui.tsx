@@ -2,6 +2,7 @@ import { Link, useRouter, type Href } from 'expo-router';
 import { createContext, useContext, useSyncExternalStore } from 'react';
 import {
   Linking,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -40,6 +41,15 @@ export function useIsDesktop() {
 }
 
 /**
+ * Tags an element so global.css can give it its wide-screen layout before the
+ * JavaScript loads. The exported HTML is always the phone layout; those rules
+ * apply only until the app sets data-hydrated on <html>.
+ */
+export function firstPaint(name: string): object {
+  return Platform.OS === 'web' ? { dataSet: { fp: name } } : {};
+}
+
+/**
  * A Pressable that renders a real <a href> on web and navigates client-side.
  * Used instead of <Link asChild>, whose Slot drops Pressable style functions
  * and render-function children.
@@ -49,11 +59,13 @@ export function PressableLink({
   style,
   children,
   onNavigate,
+  firstPaintName,
 }: {
   href: Href;
   style?: ViewStyle | ((state: InteractionState) => ViewStyle | (ViewStyle | false | undefined)[]);
   children: React.ReactNode | ((state: InteractionState) => React.ReactNode);
   onNavigate?: () => void;
+  firstPaintName?: string;
 }) {
   const router = useRouter();
   const url = Link.resolveHref(href);
@@ -62,6 +74,7 @@ export function PressableLink({
       role="link"
       // react-native-web renders a View with href as an anchor tag.
       {...({ href: url } as object)}
+      {...(firstPaintName ? firstPaint(firstPaintName) : {})}
       onPress={(event) => {
         // Let modified clicks (new tab, etc.) fall through to the browser.
         const native = event?.nativeEvent as unknown as MouseEvent | undefined;
@@ -86,6 +99,7 @@ export function Heading({ children, level = 2, style }: { children: React.ReactN
     <Text
       role="heading"
       aria-level={level}
+      {...firstPaint(`h${level}`)}
       style={[
         {
           fontFamily: level === 3 ? Fonts.headingMedium : Fonts.heading,
@@ -214,6 +228,7 @@ export function PhoneLettering({ size, color }: { size?: number; color?: string 
       style={(state: InteractionState) => [{ alignSelf: 'flex-start', borderRadius: 4 }, state.focused && styles.focusRing]}>
       {(state: InteractionState) => (
         <Text
+          {...(size ? {} : firstPaint('phone-number'))}
           style={{
             fontFamily: Fonts.display,
             fontSize,
@@ -243,19 +258,25 @@ export function Section({
   alt,
   variant,
   style,
+  firstPaintName,
 }: {
   children: React.ReactNode;
   /** @deprecated use variant="raised" */
   alt?: boolean;
   variant?: keyof typeof sectionBackgrounds;
   style?: ViewStyle;
+  /** Overrides the default first-paint spacing rule. */
+  firstPaintName?: string;
 }) {
   const isDesktop = useIsDesktop();
+  // A caller that sets its own vertical padding keeps it on every screen size.
+  const hasOwnVerticalPadding = style?.paddingVertical != null || style?.paddingTop != null || style?.paddingBottom != null;
   const v = variant ?? (alt ? 'raised' : 'dark');
   return (
     <ToneContext.Provider value={v === 'light' ? 'light' : 'dark'}>
       <View style={{ backgroundColor: sectionBackgrounds[v] }}>
         <View
+          {...firstPaint(firstPaintName ?? (hasOwnVerticalPadding ? 'section-x' : 'section'))}
           style={[
             {
               width: '100%',

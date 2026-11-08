@@ -8,8 +8,10 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
+import { Platform } from 'react-native';
 
+import { useLayoutWidth } from '@/components/ui';
 import { Colors } from '@/constants/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -23,6 +25,15 @@ export default function RootLayout() {
     BarlowCondensed_600SemiBold,
     BarlowCondensed_700Bold,
   });
+
+  // Runs in the same commit that applies the real width, so the first-paint
+  // CSS hands over to the app's own layout without a visible frame between.
+  const layoutWidth = useLayoutWidth();
+  useLayoutEffect(() => {
+    if (Platform.OS === 'web' && layoutWidth > 0) {
+      document.documentElement.setAttribute('data-hydrated', '');
+    }
+  }, [layoutWidth]);
 
   useEffect(() => {
     if (fontsLoaded) {

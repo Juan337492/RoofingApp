@@ -9,6 +9,7 @@ import { FaqAccordion, FeaturedReview, ProcessSteps, ReviewCard, TrustBar } from
 import {
   Body,
   Chip,
+  firstPaint,
   Heading,
   OrangeButton,
   PhoneLettering,
@@ -42,6 +43,7 @@ function ServiceRow({ slug, name }: { slug: string; name: string }) {
   return (
     <PressableLink
       href={{ pathname: '/services/[slug]', params: { slug } }}
+      firstPaintName="service-row"
       style={(state) => [
         { width: isDesktop ? '47%' : '100%', paddingVertical: 20, borderTopWidth: 1, borderTopColor: Colors.border, gap: 4 },
         state.focused && { outlineColor: Colors.orange, outlineStyle: 'solid', outlineWidth: 3, outlineOffset: 2 },
@@ -84,19 +86,22 @@ export default function HomeScreen() {
         <ShingleField colors={ShingleColors.charcoal} />
         {/* Fade the shingles out behind the text so the headline sits on near-solid black:
             left to right on desktop (text on the left), top to bottom on phones (text above the video). */}
-        <LinearGradient
-          colors={['rgba(13, 13, 13, 0.97)', 'rgba(13, 13, 13, 0.9)', 'rgba(13, 13, 13, 0.3)', 'rgba(13, 13, 13, 0.05)']}
-          locations={isDesktop ? [0, 0.4, 0.62, 1] : [0, 0.45, 0.75, 1]}
-          start={{ x: 0, y: 0 }}
-          end={isDesktop ? { x: 1, y: 0 } : { x: 0, y: 1 }}
-          style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}
-        />
+        <View {...firstPaint('hero-fade')} style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}>
+          <LinearGradient
+            colors={['rgba(13, 13, 13, 0.97)', 'rgba(13, 13, 13, 0.9)', 'rgba(13, 13, 13, 0.3)', 'rgba(13, 13, 13, 0.05)']}
+            locations={isDesktop ? [0, 0.4, 0.62, 1] : [0, 0.45, 0.75, 1]}
+            start={{ x: 0, y: 0 }}
+            end={isDesktop ? { x: 1, y: 0 } : { x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
         <Section
           variant="transparent"
+          firstPaintName="hero-section"
           // Tight to the header on phones so the headline starts right away.
           style={{ paddingTop: isDesktop ? Spacing.xxl + 8 : Spacing.md, paddingBottom: isDesktop ? Spacing.xxl + 8 : Spacing.xl }}>
-          <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? Spacing.xxl : Spacing.xl, alignItems: 'center' }}>
-            <View style={{ flex: isDesktop ? 5 : undefined, gap: Spacing.md, alignSelf: 'stretch', justifyContent: 'center' }}>
+          <View {...firstPaint('hero-row')} style={{ flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? Spacing.xxl : Spacing.xl, alignItems: 'center' }}>
+            <View {...firstPaint('hero-copy')} style={{ flex: isDesktop ? 5 : undefined, gap: Spacing.md, alignSelf: 'stretch', justifyContent: 'center' }}>
               <Heading level={1}>GA{'\u2019'}s trusted roofing & storm damage experts</Heading>
               <Body style={{ fontSize: 18, lineHeight: 28 }}>
                 Free inspections, a photo report of everything we find, and help with your insurance claim from the first call to the final
@@ -109,7 +114,7 @@ export default function HomeScreen() {
                 <OrangeButton label="Book a free inspection" onPress={() => Linking.openURL(Site.calendlyUrl)} />
               </View>
             </View>
-            <View style={{ flex: isDesktop ? 6 : undefined, width: isDesktop ? undefined : '100%' }}>
+            <View {...firstPaint('hero-media')} style={{ flex: isDesktop ? 6 : undefined, width: isDesktop ? undefined : '100%' }}>
               <HeroVideo />
             </View>
           </View>
