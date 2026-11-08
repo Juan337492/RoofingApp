@@ -1,5 +1,5 @@
 import { Link, useRouter, type Href } from 'expo-router';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useSyncExternalStore } from 'react';
 import {
   Linking,
   Pressable,
@@ -22,8 +22,21 @@ type Tone = 'dark' | 'light';
 const ToneContext = createContext<Tone>('dark');
 export const useTone = () => useContext(ToneContext);
 
+const subscribeToNothing = () => () => {};
+
+/**
+ * Window width that is safe to branch on while rendering. Static web export runs
+ * with a width of 0, so hydration has to start from 0 too or React reports a
+ * mismatch (#418). The real width takes over right after hydration, before paint.
+ */
+export function useLayoutWidth() {
+  const { width } = useWindowDimensions();
+  const hydrated = useSyncExternalStore(subscribeToNothing, () => true, () => false);
+  return hydrated ? width : 0;
+}
+
 export function useIsDesktop() {
-  return useWindowDimensions().width >= 820;
+  return useLayoutWidth() >= 820;
 }
 
 /**

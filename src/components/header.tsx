@@ -1,10 +1,10 @@
 import { Image } from 'expo-image';
 import { Link, usePathname, type Href } from 'expo-router';
 import { useState } from 'react';
-import { Linking, Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Linking, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { OrangeButton, PressableLink, type InteractionState } from '@/components/ui';
+import { OrangeButton, PressableLink, useLayoutWidth, type InteractionState } from '@/components/ui';
 import { Site } from '@/constants/site';
 import { Colors, Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { services } from '@/data/services';
@@ -135,7 +135,7 @@ function NavLink({ label, href, active }: { label: string; href: Href; active: b
 export function Header() {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
-  const { width } = useWindowDimensions();
+  const width = useLayoutWidth();
   const [menuOpen, setMenuOpen] = useState(false);
   // Below this width the six links no longer fit beside the brand and phone.
   const compact = width < 1080;
