@@ -1,8 +1,8 @@
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import Head from 'expo-router/head';
 import { Text, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
+import { PageMeta } from '@/components/seo';
 import { FaqAccordion, ReviewCard, StatBlock } from '@/components/sections';
 import { Body, CallButton, CheckItem, Chip, Heading, Section } from '@/components/ui';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
@@ -27,10 +27,7 @@ export default function LocationScreen() {
 
   return (
     <Screen ctaTitle={`Storm Damage in ${location.city}? We\u2019re Here to Help`}>
-      <Head>
-        <title>{`Roofing Contractor in ${location.city}, GA | Dynamic Roofing`}</title>
-        <meta name="description" content={location.intro} />
-      </Head>
+      <PageMeta title={`Roofing Contractor in ${location.city}, GA | Dynamic Roofing`} description={location.intro} />
       <Section style={{ paddingVertical: Spacing.xxl, gap: Spacing.md }}>
         <Text style={{ color: Colors.orange, fontFamily: Fonts.headingMedium, fontSize: 13, textTransform: 'uppercase', letterSpacing: 2 }}>
           {location.city}, GA

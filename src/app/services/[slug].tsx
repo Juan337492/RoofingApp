@@ -1,8 +1,8 @@
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import Head from 'expo-router/head';
 import { View } from 'react-native';
 
 import { Screen } from '@/components/screen';
+import { PageMeta } from '@/components/seo';
 import { FaqAccordion, ProcessSteps } from '@/components/sections';
 import { Body, CallButton, CheckItem, Heading, Section } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
@@ -22,10 +22,7 @@ export default function ServiceScreen() {
 
   return (
     <Screen ctaTitle="Get Your Free Roof Inspection">
-      <Head>
-        <title>{`${service.name} | Dynamic Roofing | Dallas, GA`}</title>
-        <meta name="description" content={service.intro} />
-      </Head>
+      <PageMeta title={`${service.name} | Dynamic Roofing | Dallas, GA`} description={service.intro} />
       <Section style={{ paddingVertical: Spacing.xxl, gap: Spacing.md }}>
         <Heading level={1}>{service.headline}</Heading>
         <Body style={{ fontSize: 16 }}>{service.intro}</Body>

@@ -41,6 +41,16 @@ export function useIsDesktop() {
 }
 
 /**
+ * Makes a Pressable call the business. On web it is a real tel: link, which search
+ * engines can read and phones can long-press; the browser follows it on click.
+ */
+export function phoneLinkProps(): object {
+  return Platform.OS === 'web'
+    ? { role: 'link', href: Site.phoneHref }
+    : { role: 'link', onPress: () => Linking.openURL(Site.phoneHref) };
+}
+
+/**
  * Tags an element so global.css can give it its wide-screen layout before the
  * JavaScript loads. The exported HTML is always the phone layout; those rules
  * apply only until the app sets data-hydrated on <html>.
@@ -139,12 +149,15 @@ export function OrangeButton({
   label,
   onPress,
   href,
+  phone,
   variant = 'filled',
   style,
 }: {
   label: string;
   onPress?: () => void;
   href?: Href;
+  /** Calls the business instead of running onPress. */
+  phone?: boolean;
   variant?: 'filled' | 'outline' | 'white' | 'dark';
   style?: ViewStyle;
 }) {
@@ -187,7 +200,7 @@ export function OrangeButton({
     );
   }
   return (
-    <Pressable role="button" onPress={onPress} style={buttonStyle}>
+    <Pressable role="button" onPress={onPress} {...(phone ? phoneLinkProps() : {})} style={buttonStyle}>
       {label_}
     </Pressable>
   );
@@ -207,7 +220,7 @@ export function CallButton({
       label={label ?? 'Book a free inspection'}
       variant={variant}
       style={style}
-      onPress={() => Linking.openURL(Site.phoneHref)}
+      phone
     />
   );
 }
@@ -222,9 +235,8 @@ export function PhoneLettering({ size, color }: { size?: number; color?: string 
   const fontSize = size ?? (isDesktop ? 64 : 44);
   return (
     <Pressable
-      role="link"
+      {...phoneLinkProps()}
       aria-label={`Call ${Site.phoneDisplay}`}
-      onPress={() => Linking.openURL(Site.phoneHref)}
       style={(state: InteractionState) => [{ alignSelf: 'flex-start', borderRadius: 4 }, state.focused && styles.focusRing]}>
       {(state: InteractionState) => (
         <Text

@@ -1,9 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import Head from 'expo-router/head';
 import { Linking, StyleSheet, Text, View } from 'react-native';
 
 import { HeroVideo } from '@/components/hero-video';
 import { Screen } from '@/components/screen';
+import { PageMeta } from '@/components/seo';
 import { ShingleColors, ShingleField } from '@/components/shingle-field';
 import { FaqAccordion, FeaturedReview, ProcessSteps, ReviewCard, TrustBar } from '@/components/sections';
 import {
@@ -73,13 +73,7 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      <Head>
-        <title>Dynamic Roofing | Roofing & Storm Damage Experts in Dallas, GA</title>
-        <meta
-          name="description"
-          content="Dallas, GA's trusted roofing and storm damage experts. Free roof inspections, insurance claim specialists, GAF certified. Serving west metro Atlanta."
-        />
-      </Head>
+      <PageMeta title="Dynamic Roofing | Roofing & Storm Damage Experts in Dallas, GA" description="Dallas, GA's trusted roofing and storm damage experts. Free roof inspections, insurance claim specialists, GAF certified. Serving west metro Atlanta." />
 
       {/* Hero: headline and phone first, the crew's video beside it, over a charcoal roof that shingles itself */}
       <View style={{ backgroundColor: Colors.background, overflow: 'hidden' }}>

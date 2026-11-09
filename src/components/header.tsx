@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { Link, usePathname, type Href } from 'expo-router';
 import { useState } from 'react';
-import { Linking, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { firstPaint, OrangeButton, PressableLink, useLayoutWidth, type InteractionState } from '@/components/ui';
@@ -98,7 +98,7 @@ function FullScreenMenu({ visible, onClose, pathname }: { visible: boolean; onCl
         </ScrollView>
 
         <View style={{ padding: Spacing.lg, gap: Spacing.sm, borderTopWidth: 1, borderTopColor: Colors.border }}>
-          <OrangeButton label={`Call ${Site.phoneDisplay}`} onPress={() => Linking.openURL(Site.phoneHref)} />
+          <OrangeButton label={`Call ${Site.phoneDisplay}`} phone />
           <Text style={{ color: Colors.textSecondary, fontFamily: Fonts.body, fontSize: 14, textAlign: 'center' }}>
             Roof inspections are always free.
           </Text>
@@ -134,7 +134,7 @@ function HeaderCallButton({ short }: { short: boolean }) {
   return (
     <OrangeButton
       label={short ? 'Call' : Site.phoneDisplay}
-      onPress={() => Linking.openURL(Site.phoneHref)}
+      phone
       style={{ paddingVertical: 10, paddingHorizontal: short ? 18 : 16 }}
     />
   );

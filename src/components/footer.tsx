@@ -3,13 +3,13 @@ import { type Href } from 'expo-router';
 import { Linking, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PressableLink, useIsDesktop, type InteractionState } from '@/components/ui';
+import { phoneLinkProps, PressableLink, useIsDesktop, type InteractionState } from '@/components/ui';
 import { Site } from '@/constants/site';
 import { Colors, Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { locations } from '@/data/locations';
 import { services } from '@/data/services';
 
-function FooterLink({ label, href, onPress }: { label: string; href?: Href; onPress?: () => void }) {
+function FooterLink({ label, href, onPress, phone }: { label: string; href?: Href; onPress?: () => void; phone?: boolean }) {
   const isDesktop = useIsDesktop();
   const style = (state: InteractionState) => [
     // Taller on phones so each link is a comfortable tap target.
@@ -26,7 +26,7 @@ function FooterLink({ label, href, onPress }: { label: string; href?: Href; onPr
       {text}
     </PressableLink>
   ) : (
-    <Pressable onPress={onPress} style={style}>
+    <Pressable onPress={onPress} {...(phone ? phoneLinkProps() : {})} style={style}>
       {text}
     </Pressable>
   );
@@ -68,7 +68,7 @@ export function Footer() {
               accessibilityLabel="Dynamic Roofing, built to protect, built to last"
             />
             <View>
-              <FooterLink label={Site.phoneDisplay} onPress={() => Linking.openURL(Site.phoneHref)} />
+              <FooterLink label={Site.phoneDisplay} phone />
               <FooterLink label={Site.email} onPress={() => Linking.openURL(`mailto:${Site.email}`)} />
               <Text style={{ fontFamily: Fonts.body, fontSize: 15, lineHeight: 22, color: Colors.textSecondary, paddingVertical: 3 }}>
                 {Site.address}

@@ -1,9 +1,9 @@
-import Head from 'expo-router/head';
 import { useState } from 'react';
 import { Linking, Pressable, Text, TextInput, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
-import { Body, Heading, OrangeButton, Section } from '@/components/ui';
+import { PageMeta } from '@/components/seo';
+import { Body, Heading, OrangeButton, phoneLinkProps, Section } from '@/components/ui';
 import { EmailJs, isEmailJsConfigured, Site } from '@/constants/site';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 
@@ -110,13 +110,7 @@ export default function ContactScreen() {
 
   return (
     <Screen ctaTitle="Prefer to Talk? Call Us Now">
-      <Head>
-        <title>Contact Us | Dynamic Roofing | Dallas, GA</title>
-        <meta
-          name="description"
-          content="Contact Dynamic Roofing and Construction for a free roof inspection. Call (404) 784-9030, send a message, or schedule online."
-        />
-      </Head>
+      <PageMeta title="Contact Us | Dynamic Roofing | Dallas, GA" description="Contact Dynamic Roofing and Construction for a free roof inspection. Call (404) 784-9030, send a message, or schedule online." />
 
       <Section style={{ paddingVertical: Spacing.xxl, gap: Spacing.md }}>
         <Heading level={1}>Contact Us</Heading>
@@ -124,7 +118,7 @@ export default function ContactScreen() {
           Send us a message, give us a call, or book your free roof inspection directly on our calendar — whichever is
           easiest for you.
         </Body>
-        <Pressable onPress={() => Linking.openURL(Site.phoneHref)}>
+        <Pressable {...phoneLinkProps()}>
           <Text style={{ color: Colors.orange, fontFamily: Fonts.heading, fontSize: 28 }}>{Site.phoneDisplay}</Text>
         </Pressable>
       </Section>
