@@ -30,14 +30,17 @@
 
   html:not([data-hydrated]) [data-fp='section'] { padding: 72px 32px !important; }
   html:not([data-hydrated]) [data-fp='section-x'] { padding-left: 32px !important; padding-right: 32px !important; }
-  html:not([data-hydrated]) [data-fp='hero-section'] { padding: 56px 32px !important; }
+  /* The hero drops the page's max width so the video can run off the right edge;
+     the left padding lines its text up with the sections below. */
+  html:not([data-hydrated]) [data-fp='hero-section'] { max-width: 100% !important; padding: 56px 0 56px max(32px, calc(50% - 548px)) !important; }
 
   html:not([data-hydrated]) [data-fp='hero-fade'] > * {
     background-image: linear-gradient(90deg, rgba(13, 13, 13, 0.97) 0%, rgba(13, 13, 13, 0.9) 40%, rgba(13, 13, 13, 0.3) 62%, rgba(13, 13, 13, 0.05) 100%) !important;
   }
-  html:not([data-hydrated]) [data-fp='hero-row'] { flex-direction: row !important; gap: 48px !important; }
-  html:not([data-hydrated]) [data-fp='hero-copy'] { flex: 5 1 0% !important; }
-  html:not([data-hydrated]) [data-fp='hero-media'] { flex: 6 1 0% !important; width: auto !important; }
+  html:not([data-hydrated]) [data-fp='hero-row'] { flex-direction: row !important; gap: 40px !important; }
+  html:not([data-hydrated]) [data-fp='hero-copy'] { flex: 0 1 460px !important; }
+  html:not([data-hydrated]) [data-fp='hero-media'] { flex: 1 1 0% !important; min-width: 50% !important; max-width: 960px !important; margin: 0 0 0 auto !important; align-self: auto !important; }
+  html:not([data-hydrated]) [data-fp='hero-frame'] { border-radius: 4px 0 0 4px !important; }
 
   html:not([data-hydrated]) [data-fp='trust-bar'] { flex-direction: row !important; align-items: center !important; gap: 48px !important; }
   html:not([data-hydrated]) [data-fp='trust-facts'] { flex: 1 1 0% !important; flex-direction: row !important; gap: 32px !important; }

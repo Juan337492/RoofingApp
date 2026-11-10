@@ -1,10 +1,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Linking, StyleSheet, Text, View } from 'react-native';
+import { Linking, Platform, StyleSheet, Text, View } from 'react-native';
 
 import { HeroVideo } from '@/components/hero-video';
 import { Screen } from '@/components/screen';
 import { PageMeta } from '@/components/seo';
-import { ShingleColors, ShingleField } from '@/components/shingle-field';
+import { ServiceAreaMap } from '@/components/service-area-map';
+import { ShingleColors, ShingleField, ShingleSwatch, TimberlineColors } from '@/components/shingle-field';
 import { FaqAccordion, FeaturedReview, ProcessSteps, ReviewCard, TrustBar } from '@/components/sections';
 import {
   Body,
@@ -38,14 +39,23 @@ const serviceBlurbs: Record<string, string> = {
   'roof-inspection': 'Always free, with a photo report of everything we find.',
 };
 
-function ServiceRow({ slug, name }: { slug: string; name: string }) {
+/** CSS-only lengths (calc, max) that React Native's style types do not model. Web only. */
+const css = (value: string) => value as unknown as number;
+
+/**
+ * One service in the index. The featured row runs the full width under an orange
+ * rule, which also leaves an even number of rows to pair up beneath it.
+ */
+function ServiceRow({ slug, name, featured }: { slug: string; name: string; featured?: boolean }) {
   const isDesktop = useIsDesktop();
   return (
     <PressableLink
       href={{ pathname: '/services/[slug]', params: { slug } }}
-      firstPaintName="service-row"
+      firstPaintName={featured ? undefined : 'service-row'}
       style={(state) => [
-        { width: isDesktop ? '47%' : '100%', paddingVertical: 20, borderTopWidth: 1, borderTopColor: Colors.border, gap: 4 },
+        featured
+          ? { width: '100%', paddingTop: 22, paddingBottom: 28, borderTopWidth: 3, borderTopColor: Colors.orange, gap: 6 }
+          : { width: isDesktop ? '47%' : '100%', paddingVertical: 20, borderTopWidth: 1, borderTopColor: Colors.border, gap: 4 },
         state.focused && { outlineColor: Colors.orange, outlineStyle: 'solid', outlineWidth: 3, outlineOffset: 2 },
       ]}>
       {(state: InteractionState) => (
@@ -53,14 +63,14 @@ function ServiceRow({ slug, name }: { slug: string; name: string }) {
           <Text
             style={{
               fontFamily: Fonts.heading,
-              fontSize: 28,
-              lineHeight: 32,
+              fontSize: featured ? 40 : 28,
+              lineHeight: featured ? 44 : 32,
               color: state.hovered || state.pressed ? Colors.orange : Colors.white,
               textDecorationLine: state.hovered ? 'underline' : 'none',
             }}>
             {name}
           </Text>
-          <Body style={{ fontSize: 16, lineHeight: 24 }}>{serviceBlurbs[slug]}</Body>
+          <Body style={featured ? { fontSize: 18, lineHeight: 28 } : { fontSize: 16, lineHeight: 24 }}>{serviceBlurbs[slug]}</Body>
         </>
       )}
     </PressableLink>
@@ -70,6 +80,9 @@ function ServiceRow({ slug, name }: { slug: string; name: string }) {
 export default function HomeScreen() {
   const isDesktop = useIsDesktop();
   const claimSteps = getService('insurance-claims')!.process;
+  // On wide web screens the video runs off the right edge of the window. That needs
+  // CSS lengths, so tablets in the native app keep the two columns inside the page width.
+  const bleed = isDesktop && Platform.OS === 'web';
 
   return (
     <Screen>
@@ -93,9 +106,19 @@ export default function HomeScreen() {
           variant="transparent"
           firstPaintName="hero-section"
           // Tight to the header on phones so the headline starts right away.
-          style={{ paddingTop: isDesktop ? Spacing.xxl + 8 : Spacing.md, paddingBottom: isDesktop ? Spacing.xxl + 8 : Spacing.xl }}>
-          <View {...firstPaint('hero-row')} style={{ flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? Spacing.xxl : Spacing.xl, alignItems: 'center' }}>
-            <View {...firstPaint('hero-copy')} style={{ flex: isDesktop ? 5 : undefined, gap: Spacing.md, alignSelf: 'stretch', justifyContent: 'center' }}>
+          style={{
+            paddingTop: isDesktop ? Spacing.xxl + 8 : Spacing.md,
+            paddingBottom: isDesktop ? Spacing.xxl + 8 : Spacing.xl,
+            // Left padding keeps the headline on the same line as the sections below (page width 1160, gutter 32).
+            ...(bleed ? { maxWidth: '100%', paddingLeft: css('max(32px, calc(50% - 548px))'), paddingRight: 0 } : null),
+          }}>
+          <View {...firstPaint('hero-row')} style={{ flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? 40 : Spacing.xl, alignItems: 'center' }}>
+            <View
+              {...firstPaint('hero-copy')}
+              style={[
+                { gap: Spacing.md, alignSelf: 'stretch', justifyContent: 'center' },
+                bleed ? { flexGrow: 0, flexShrink: 1, flexBasis: 460 } : isDesktop ? { flex: 5 } : null,
+              ]}>
               <Heading level={1}>GA{'\u2019'}s trusted roofing & storm damage experts</Heading>
               <Body style={{ fontSize: 18, lineHeight: 28 }}>
                 Free inspections, a photo report of everything we find, and help with your insurance claim from the first call to the final
@@ -108,8 +131,17 @@ export default function HomeScreen() {
                 <OrangeButton label="Book a free inspection" onPress={() => Linking.openURL(Site.calendlyUrl)} />
               </View>
             </View>
-            <View {...firstPaint('hero-media')} style={{ flex: isDesktop ? 6 : undefined, width: isDesktop ? undefined : '100%' }}>
-              <HeroVideo />
+            <View
+              {...firstPaint('hero-media')}
+              style={
+                bleed
+                  ? { flex: 1, minWidth: '50%', maxWidth: 960, marginLeft: 'auto' }
+                  : isDesktop
+                    ? { flex: 6 }
+                    : // Phones: edge to edge, past the section's side padding.
+                      { alignSelf: 'stretch', marginHorizontal: -Spacing.lg }
+              }>
+              <HeroVideo edge={bleed ? 'right' : isDesktop ? 'none' : 'both'} />
             </View>
           </View>
         </Section>
@@ -121,8 +153,8 @@ export default function HomeScreen() {
       <Section style={{ gap: Spacing.lg }}>
         <Heading level={2}>What we fix and install</Heading>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-          {services.map((service) => (
-            <ServiceRow key={service.slug} slug={service.slug} name={service.name} />
+          {services.map((service, i) => (
+            <ServiceRow key={service.slug} slug={service.slug} name={service.name} featured={i === 0} />
           ))}
         </View>
       </Section>
@@ -139,11 +171,11 @@ export default function HomeScreen() {
         </View>
       </Section>
 
-      {/* Reviews */}
-      <Section style={{ gap: Spacing.xl }}>
+      {/* Reviews: the one light section, so the page changes pace halfway down */}
+      <Section variant="light" style={{ gap: Spacing.xl }}>
         <Heading level={2}>What homeowners say</Heading>
         <FeaturedReview name={featured.name} service={featured.service} text={featured.text} />
-        <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: Spacing.xl }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xl }}>
           {supporting.map((r) => (
             <ReviewCard key={r.name} name={r.name} place={r.service ?? 'Google review'} text={r.text} />
           ))}
@@ -154,35 +186,73 @@ export default function HomeScreen() {
       </Section>
 
       {/* Shingle comparison tools */}
-      <Section alt style={{ gap: Spacing.md }}>
-        <Heading level={2}>Pick your shingle before we start</Heading>
-        <Body>Compare popular GAF shingles side by side and see every Timberline HDZ{'®'} color on a real house.</Body>
-        <View style={{ flexDirection: 'row', marginTop: Spacing.sm }}>
-          <OrangeButton label="Compare shingles" href="/shingles" />
+      {/* These two-column sections wrap with flexbox instead of checking the screen
+          width, so they are laid out correctly before any JavaScript runs. Each column
+          can shrink, so one that is alone on its row never runs past a narrow phone. */}
+      <Section alt>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.xxl }}>
+          <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:380, maxWidth: 500, gap: Spacing.md }}>
+            <Heading level={2}>Pick your shingle before we start</Heading>
+            <Body>Compare popular GAF shingles side by side and see every Timberline HDZ{'®'} color on a real house.</Body>
+            <View style={{ flexDirection: 'row', marginTop: Spacing.sm }}>
+              <OrangeButton label="Compare shingles" href="/shingles" />
+            </View>
+          </View>
+          <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:320, maxWidth: 548, gap: Spacing.md }}>
+            {/* Three across at every width, so the six always make two even rows. */}
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: Spacing.lg }}>
+              {TimberlineColors.map((color, i) => (
+                <View key={color.name} style={{ width: '31%', gap: Spacing.sm }}>
+                  <ShingleSwatch tabs={color.tabs} seed={i + 1} />
+                  <Text style={{ fontFamily: Fonts.headingMedium, fontSize: 17, lineHeight: 20, letterSpacing: 0.3, color: Colors.white }}>
+                    {color.name}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            <Text style={{ fontFamily: Fonts.body, fontSize: 14, lineHeight: 20, color: Colors.granule }}>
+              Six Timberline HDZ{'®'} colors. Colors on a screen are approximate.
+            </Text>
+          </View>
         </View>
       </Section>
 
       {/* Service areas */}
-      <Section style={{ gap: Spacing.md }}>
-        <Heading level={2}>Where we work</Heading>
-        <Body>Based in Dallas, GA, with crews across west metro Atlanta.</Body>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', columnGap: Spacing.xl, rowGap: Spacing.xs, marginTop: Spacing.sm }}>
-          {locations.map((loc) => (
-            <Chip key={loc.slug} label={loc.city} href={{ pathname: '/locations/[city]', params: { city: loc.slug } }} />
-          ))}
+      <Section>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.xxl }}>
+          <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:300, maxWidth: 440, gap: Spacing.md }}>
+            <Heading level={2}>Where we work</Heading>
+            <Body>Based in Dallas, GA, with crews across west metro Atlanta.</Body>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', columnGap: Spacing.xl, rowGap: Spacing.xs, marginTop: Spacing.sm }}>
+              {locations.map((loc) => (
+                <Chip key={loc.slug} label={loc.city} href={{ pathname: '/locations/[city]', params: { city: loc.slug } }} />
+              ))}
+            </View>
+          </View>
+          <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:320, maxWidth: 500 }}>
+            <ServiceAreaMap />
+          </View>
         </View>
       </Section>
 
       {/* FAQ highlights */}
-      <Section alt style={{ gap: Spacing.lg }}>
-        <Heading level={2}>Common questions</Heading>
-        <FaqAccordion
-          faqs={[
-            ...getService('roof-replacement')!.faqs.slice(0, 2),
-            ...getService('storm-damage-roofing')!.faqs.slice(0, 1),
-            ...getService('insurance-claims')!.faqs.slice(0, 1),
-          ]}
-        />
+      <Section alt>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', columnGap: Spacing.xxl, rowGap: Spacing.lg }}>
+          <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:260, maxWidth: 340, gap: Spacing.md }}>
+            <Heading level={2}>Common questions</Heading>
+            <Body>Have a question that isn{'’'}t here? Call and ask.</Body>
+            <PhoneLettering size={36} />
+          </View>
+          <View style={{ flexGrow: 2, flexShrink: 1, flexBasis: 320, maxWidth: 700 }}>
+            <FaqAccordion
+              faqs={[
+                ...getService('roof-replacement')!.faqs.slice(0, 2),
+                ...getService('storm-damage-roofing')!.faqs.slice(0, 1),
+                ...getService('insurance-claims')!.faqs.slice(0, 1),
+              ]}
+            />
+          </View>
+        </View>
       </Section>
     </Screen>
   );

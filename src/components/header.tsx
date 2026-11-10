@@ -44,7 +44,8 @@ function Brand({ compact }: { compact: boolean }) {
         aria-label="Dynamic Roofing home"
         style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1, minWidth: 0 }}>
         <View {...(compact ? firstPaint('brand-logo') : {})} style={{ width: compact ? 40 : 48, height: compact ? 40 : 48 }}>
-          <Image source={require('../../assets/images/logo.png')} style={{ width: '100%', height: '100%' }} contentFit="contain" />
+          {/* The mark alone: the full logo's wordmark is unreadable at this size and repeats the text beside it. */}
+          <Image source={require('../../assets/images/logo-mark.png')} style={{ width: '100%', height: '100%' }} contentFit="contain" />
         </View>
         <Text numberOfLines={1} {...(compact ? firstPaint('brand-name') : {})} style={{ fontFamily: Fonts.display, fontSize: compact ? 20 : 24, color: Colors.white, letterSpacing: 0.3 }}>
           Dynamic Roofing

@@ -52,6 +52,54 @@ function buildCourse(row: number, width: number, tabColors: readonly string[]): 
 }
 
 /**
+ * A few GAF Timberline HDZ colors. The tones are approximations drawn in code,
+ * not GAF's photography; the comparison page has the real samples.
+ */
+export const TimberlineColors = [
+  { name: 'Charcoal', tabs: ['#3A3B3D', '#2F3032', '#444548', '#35363A'] },
+  { name: 'Pewter Gray', tabs: ['#6F7375', '#62666A', '#7C8083', '#585C60'] },
+  { name: 'Slate', tabs: ['#55606A', '#49535C', '#626E78', '#404951'] },
+  { name: 'Weathered Wood', tabs: ['#6B6257', '#5C544B', '#786E62', '#514A42'] },
+  { name: 'Barkwood', tabs: ['#5A4A3E', '#4C3E34', '#685649', '#43362D'] },
+  { name: 'Hickory', tabs: ['#7A5A3C', '#694C32', '#8A6846', '#5C422B'] },
+] as const;
+
+const SWATCH_COURSES = 5;
+const SWATCH_COURSE_HEIGHT = 22;
+
+/**
+ * A small still patch of shingles in one color. Sized with flexbox instead of a
+ * measured width, so it is already drawn in the exported HTML.
+ */
+export function ShingleSwatch({ tabs, seed }: { tabs: readonly string[]; seed: number }) {
+  const rand = seeded(seed * 7919 + 3);
+  return (
+    <View
+      aria-hidden
+      style={{ height: SWATCH_COURSES * SWATCH_COURSE_HEIGHT, backgroundColor: '#0E0E0E', borderRadius: 3, overflow: 'hidden' }}>
+      {Array.from({ length: SWATCH_COURSES }, (_, course) => (
+        <View key={course} style={{ flexDirection: 'row', height: SWATCH_COURSE_HEIGHT, marginLeft: -Math.round(rand() * 40) }}>
+          {/* More tabs than any swatch is wide; the frame clips the rest. */}
+          {Array.from({ length: 8 }, (_, tab) => (
+            <View
+              key={tab}
+              style={{
+                width: 34 + Math.round(rand() * 50),
+                marginRight: 2,
+                flexShrink: 0,
+                backgroundColor: tabs[Math.floor(rand() * tabs.length)],
+                borderBottomWidth: 3,
+                borderBottomColor: 'rgba(0, 0, 0, 0.4)',
+              }}
+            />
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+/**
  * A field of shingle courses that lay themselves from the eave (bottom) up to
  * the ridge (top) when scrolled into view, each row left to right.
  */

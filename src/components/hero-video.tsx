@@ -5,7 +5,7 @@ import { useVideoPlayer, VideoView, type VideoPlayer } from 'expo-video';
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import type { InteractionState } from '@/components/ui';
+import { firstPaint, type InteractionState } from '@/components/ui';
 import { Site } from '@/constants/site';
 import { Colors, Fonts } from '@/constants/theme';
 
@@ -68,8 +68,11 @@ function Controls({ player }: { player: VideoPlayer }) {
   );
 }
 
-/** The crew's own video in a 16:9 frame, muted autoplay with overlaid controls. */
-export function HeroVideo() {
+/**
+ * The crew's own video, muted autoplay with overlaid controls.
+ * `edge` says which sides run off the screen, so those corners stay square.
+ */
+export function HeroVideo({ edge = 'none' }: { edge?: 'none' | 'right' | 'both' }) {
   const pathname = usePathname();
 
   const player = useVideoPlayer(Site.heroVideoUrl, (video) => {
@@ -122,12 +125,28 @@ export function HeroVideo() {
     }
   }, [currentTime, started]);
 
+  const leftRadius = edge === 'both' ? 0 : 4;
+  const rightRadius = edge === 'none' ? 4 : 0;
+
   return (
     // An aspect ratio, not a measured height, so the frame is the right size before any JavaScript runs.
-    <View style={{ width: '100%', aspectRatio: 16 / 9, backgroundColor: '#000', borderRadius: 4, overflow: 'hidden' }}>
-      {/* The source file is pillarboxed (black bars baked in); zoom just enough to crop them.
-          The transform sits on a wrapper because VideoView drops it on web. */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, transform: [{ scale: 1.19 }] }}>
+    // The source file is a 3:2 picture with black bars baked into a 16:9 file, so a 3:2 frame
+    // with cover fit crops exactly the bars and nothing else.
+    <View
+      {...firstPaint('hero-frame')}
+      style={{
+        width: '100%',
+        aspectRatio: 3 / 2,
+        backgroundColor: '#000',
+        borderTopLeftRadius: leftRadius,
+        borderBottomLeftRadius: leftRadius,
+        borderTopRightRadius: rightRadius,
+        borderBottomRightRadius: rightRadius,
+        overflow: 'hidden',
+      }}>
+      {/* A hair of zoom hides any sliver of bar at the edges. The transform sits on a
+          wrapper because VideoView drops it on web. */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, transform: [{ scale: 1.02 }] }}>
         <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" nativeControls={false} playsInline />
         {!started ? (
           <Image
