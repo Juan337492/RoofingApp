@@ -13,6 +13,7 @@ import { Platform } from 'react-native';
 
 import { useLayoutWidth } from '@/components/ui';
 import { Colors } from '@/constants/theme';
+import { LanguageProvider } from '@/i18n/language';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,15 +27,6 @@ export default function RootLayout() {
     BarlowCondensed_700Bold,
   });
 
-  // Runs in the same commit that applies the real width, so the first-paint
-  // CSS hands over to the app's own layout without a visible frame between.
-  const layoutWidth = useLayoutWidth();
-  useLayoutEffect(() => {
-    if (Platform.OS === 'web' && layoutWidth > 0) {
-      document.documentElement.setAttribute('data-hydrated', '');
-    }
-  }, [layoutWidth]);
-
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
@@ -44,7 +36,8 @@ export default function RootLayout() {
   // Render immediately (required for static web rendering / SEO).
   // On native the splash screen stays visible until fonts are ready.
   return (
-    <>
+    <LanguageProvider>
+      <HydrationMarker />
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -57,6 +50,21 @@ export default function RootLayout() {
           gestureEnabled: true,
         }}
       />
-    </>
+    </LanguageProvider>
   );
+}
+
+/**
+ * Runs in the same commit that applies the real width, so the first-paint CSS
+ * hands over to the app's own layout without a visible frame between. It sits
+ * inside LanguageProvider so it commits together with the page content.
+ */
+function HydrationMarker() {
+  const layoutWidth = useLayoutWidth();
+  useLayoutEffect(() => {
+    if (Platform.OS === 'web' && layoutWidth > 0) {
+      document.documentElement.setAttribute('data-hydrated', '');
+    }
+  }, [layoutWidth]);
+  return null;
 }

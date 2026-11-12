@@ -2,6 +2,7 @@ import { useEvent } from 'expo';
 import { Image } from 'expo-image';
 import { usePathname } from 'expo-router';
 import { useVideoPlayer, VideoView, type VideoPlayer } from 'expo-video';
+import { useGT } from 'gt-react-native';
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -38,12 +39,13 @@ function OverlayButton({ label, accessibilityLabel, onPress }: { label: string; 
 function Controls({ player }: { player: VideoPlayer }) {
   const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
   const { muted } = useEvent(player, 'mutedChange', { muted: player.muted });
+  const gt = useGT();
 
   return (
     <View style={{ position: 'absolute', left: 12, bottom: 12, flexDirection: 'row', gap: 8 }}>
       <OverlayButton
-        label={isPlaying ? 'Pause' : 'Play'}
-        accessibilityLabel={isPlaying ? 'Pause video' : 'Play video'}
+        label={isPlaying ? gt('Pause') : gt('Play')}
+        accessibilityLabel={isPlaying ? gt('Pause video') : gt('Play video')}
         onPress={() => {
           if (isPlaying) {
             player.pause();
@@ -55,8 +57,8 @@ function Controls({ player }: { player: VideoPlayer }) {
         }}
       />
       <OverlayButton
-        label={muted ? 'Sound on' : 'Sound off'}
-        accessibilityLabel={muted ? 'Turn sound on' : 'Turn sound off'}
+        label={muted ? gt('Sound on') : gt('Sound off')}
+        accessibilityLabel={muted ? gt('Turn sound on') : gt('Turn sound off')}
         onPress={() => {
           player.muted = !muted;
           if (muted && !isPlaying) {
@@ -74,6 +76,7 @@ function Controls({ player }: { player: VideoPlayer }) {
  */
 export function HeroVideo({ edge = 'none' }: { edge?: 'none' | 'right' | 'both' }) {
   const pathname = usePathname();
+  const gt = useGT();
 
   const player = useVideoPlayer(Site.heroVideoUrl, (video) => {
     video.loop = true;
@@ -153,7 +156,7 @@ export function HeroVideo({ edge = 'none' }: { edge?: 'none' | 'right' | 'both' 
             source={require('../../assets/images/hero-poster.jpg')}
             style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
             contentFit="cover"
-            accessibilityLabel="The Dynamic Roofing crew in front of a client's home"
+            accessibilityLabel={gt("The Dynamic Roofing crew in front of a client's home")}
           />
         ) : null}
       </View>

@@ -1,3 +1,4 @@
+import { useGT } from 'gt-react-native';
 import { ScrollView, View } from 'react-native';
 
 import { Footer } from '@/components/footer';
@@ -8,6 +9,7 @@ import { Colors } from '@/constants/theme';
 
 /** Page shell: header on top, content, orange call-to-action band, footer. */
 export function Screen({ children, ctaTitle }: { children: React.ReactNode; ctaTitle?: string }) {
+  const gt = useGT();
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       <SiteSeo />
@@ -16,8 +18,8 @@ export function Screen({ children, ctaTitle }: { children: React.ReactNode; ctaT
         {children}
         <View style={{ flex: 1 }} />
         <CtaBand
-          title={ctaTitle ?? 'Get your free roof inspection'}
-          subtitle="No obligation. You get a photo report of everything we find."
+          title={ctaTitle ?? gt('Get your free roof inspection')}
+          subtitle={gt('No obligation. You get a photo report of everything we find.')}
         />
         <Footer />
       </ScrollView>

@@ -8,3 +8,5 @@ mockups
 expo-go-qr.png
 Dockerfile
 fly.toml
+.env
+.env*

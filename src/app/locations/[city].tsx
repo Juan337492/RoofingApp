@@ -1,4 +1,5 @@
 import { Redirect, useLocalSearchParams } from 'expo-router';
+import { msg, T, useGT, useMessages, Var } from 'gt-react-native';
 import { Text, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
@@ -16,6 +17,8 @@ export function generateStaticParams(): { city: string }[] {
 export default function LocationScreen() {
   const { city } = useLocalSearchParams<{ city: string }>();
   const location = getLocation(city);
+  const gt = useGT();
+  const m = useMessages();
 
   if (!location) {
     return <Redirect href="/" />;
@@ -26,21 +29,25 @@ export default function LocationScreen() {
   const cityReviews = pickReviews(cityIndex * 2, 2);
 
   return (
-    <Screen ctaTitle={`Storm Damage in ${location.city}? We\u2019re Here to Help`}>
+    <Screen ctaTitle={gt('Storm Damage in {city}? We\u2019re Here to Help', { city: location.city })}>
       <PageMeta title={`Roofing Contractor in ${location.city}, GA | Dynamic Roofing`} description={location.intro} />
       <Section style={{ paddingVertical: Spacing.xxl, gap: Spacing.md }}>
         <Text style={{ color: Colors.orange, fontFamily: Fonts.headingMedium, fontSize: 13, textTransform: 'uppercase', letterSpacing: 2 }}>
           {location.city}, GA
         </Text>
-        <Heading level={1}>Roofing Contractor in {location.city}, GA</Heading>
-        <Body style={{ fontSize: 16 }}>{location.intro}</Body>
+        <Heading level={1}>
+          <T>Roofing Contractor in <Var>{location.city}</Var>, GA</T>
+        </Heading>
+        <Body style={{ fontSize: 16 }}>{m(location.intro)}</Body>
         <View style={{ flexDirection: 'row' }}>
-          <CallButton label="Schedule Free Inspection" />
+          <CallButton label={gt('Schedule Free Inspection')} />
         </View>
       </Section>
 
       <Section alt style={{ gap: Spacing.lg }}>
-        <Heading level={2}>Neighborhoods We Serve in {location.city}</Heading>
+        <Heading level={2}>
+          <T>Neighborhoods We Serve in <Var>{location.city}</Var></T>
+        </Heading>
         <View style={{ gap: Spacing.sm }}>
           {location.neighborhoods.map((n) => (
             <CheckItem key={n} text={n} />
@@ -49,7 +56,9 @@ export default function LocationScreen() {
       </Section>
 
       <Section style={{ gap: Spacing.lg }}>
-        <Heading level={2}>Recent Projects in {location.city}</Heading>
+        <Heading level={2}>
+          <T>Recent Projects in <Var>{location.city}</Var></T>
+        </Heading>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md }}>
           {location.projects.map((p) => (
             <View
@@ -67,35 +76,45 @@ export default function LocationScreen() {
               <Text style={{ color: Colors.orange, fontFamily: Fonts.headingMedium, fontSize: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
                 {p.neighborhood}
               </Text>
-              <Heading level={3}>{p.type}</Heading>
-              <Body>{p.description}</Body>
+              <Heading level={3}>{m(p.type)}</Heading>
+              <Body>{m(p.description)}</Body>
             </View>
           ))}
         </View>
       </Section>
 
       <Section alt style={{ gap: Spacing.lg }}>
-        <Heading level={2}>{location.city} by the Numbers</Heading>
+        <Heading level={2}>
+          <T><Var>{location.city}</Var> by the Numbers</T>
+        </Heading>
         <StatBlock stats={location.stats} />
       </Section>
 
       <Section style={{ gap: Spacing.lg }}>
-        <Heading level={2}>What Homeowners Say</Heading>
-        <Body>Real reviews from our Google Business Profile — rated 5.0 from 30 reviews.</Body>
+        <Heading level={2}>
+          <T>What Homeowners Say</T>
+        </Heading>
+        <Body>
+          <T>Real reviews from our Google Business Profile — rated 5.0 from 30 reviews.</T>
+        </Body>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md }}>
           {cityReviews.map((r) => (
-            <ReviewCard key={r.name} name={r.name} place={r.service ?? 'Google Review'} text={r.text} />
+            <ReviewCard key={r.name} name={r.name} place={r.service ?? msg('Google review')} text={r.text} />
           ))}
         </View>
       </Section>
 
       <Section alt style={{ gap: Spacing.lg }}>
-        <Heading level={2}>FAQ for {location.city} Homeowners</Heading>
+        <Heading level={2}>
+          <T>FAQ for <Var>{location.city}</Var> Homeowners</T>
+        </Heading>
         <FaqAccordion faqs={location.faqs} />
       </Section>
 
       <Section style={{ gap: Spacing.lg }}>
-        <Heading level={2}>Nearby Areas We Serve</Heading>
+        <Heading level={2}>
+          <T>Nearby Areas We Serve</T>
+        </Heading>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
           {getNearby(location.slug).map((l) => (
             <Chip key={l.slug} label={l.city} href={{ pathname: '/locations/[city]', params: { city: l.slug } }} />

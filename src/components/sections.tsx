@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { msg, T, useGT, useMessages } from 'gt-react-native';
 import { useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 
@@ -11,6 +12,7 @@ import type { Faq } from '@/data/services';
 /** Closing call to action on the logo orange, over a roof that shingles itself. */
 export function CtaBand({ title, subtitle }: { title: string; subtitle?: string }) {
   const isDesktop = useIsDesktop();
+  const gt = useGT();
   return (
     <View style={{ backgroundColor: Colors.orange, overflow: 'hidden' }}>
       <ShingleField />
@@ -28,7 +30,7 @@ export function CtaBand({ title, subtitle }: { title: string; subtitle?: string 
           </View>
           <View style={{ gap: Spacing.md, alignItems: 'flex-start' }}>
             <PhoneLettering color={Colors.white} />
-            <OrangeButton variant="white" label="Book a free inspection" onPress={() => Linking.openURL(Site.calendlyUrl)} />
+            <OrangeButton variant="white" label={gt('Book a free inspection')} onPress={() => Linking.openURL(Site.calendlyUrl)} />
           </View>
         </View>
       </Section>
@@ -37,22 +39,23 @@ export function CtaBand({ title, subtitle }: { title: string; subtitle?: string 
 }
 
 const trustFacts = [
-  { title: 'Licensed and insured', detail: 'Every crew member, every job.' },
+  { title: msg('Licensed and insured'), detail: msg('Every crew member, every job.') },
   { title: 'rating', detail: '' },
-  { title: 'On your side with insurance', detail: 'We meet your adjuster on the roof.' },
+  { title: msg('On your side with insurance'), detail: msg('We meet your adjuster on the roof.') },
 ];
 
 /** Google rating shown as stars beside a large score, instead of a sentence. */
 export function RatingBadge() {
   const tone = useTone();
+  const gt = useGT();
   return (
-    <View style={{ gap: 2 }} aria-label="Rated 5.0 out of 5 from 30 Google reviews">
+    <View style={{ gap: 2 }} aria-label={gt('Rated 5.0 out of 5 from 30 Google reviews')}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
         <Text style={{ fontFamily: Fonts.display, fontSize: 34, lineHeight: 36, color: tone === 'light' ? Colors.ink : Colors.white }}>5.0</Text>
         <Stars size={22} />
       </View>
       <Text style={{ fontFamily: Fonts.body, fontSize: 15, lineHeight: 22, color: tone === 'light' ? Colors.inkSecondary : Colors.textSecondary }}>
-        30 Google reviews
+        <T>30 Google reviews</T>
       </Text>
     </View>
   );
@@ -60,6 +63,8 @@ export function RatingBadge() {
 
 export function TrustBar() {
   const isDesktop = useIsDesktop();
+  const gt = useGT();
+  const m = useMessages();
 
   return (
     <Section variant="raised" style={{ paddingVertical: Spacing.xl }}>
@@ -75,13 +80,13 @@ export function TrustBar() {
             source={require('../../assets/images/gaf-certified.png')}
             style={{ width: 92, height: 92 }}
             contentFit="contain"
-            accessibilityLabel="GAF Certified Residential Roofing Contractor"
+            accessibilityLabel={gt('GAF Certified Residential Roofing Contractor')}
           />
           <Image
             source={require('../../assets/images/atlas-gold.png')}
             style={{ width: 92, height: 92 }}
             contentFit="contain"
-            accessibilityLabel="Atlas Pro Plus Gold certified contractor"
+            accessibilityLabel={gt('Atlas Pro Plus Gold certified contractor')}
           />
         </View>
         <View {...firstPaint('trust-facts')} style={{ flex: isDesktop ? 1 : undefined, flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? Spacing.xl : Spacing.md }}>
@@ -91,8 +96,8 @@ export function TrustBar() {
                 <RatingBadge />
               ) : (
                 <>
-                  <Text style={{ fontFamily: Fonts.heading, fontSize: 22, color: Colors.white }}>{fact.title}</Text>
-                  <Text style={{ fontFamily: Fonts.body, fontSize: 15, lineHeight: 22, color: Colors.textSecondary }}>{fact.detail}</Text>
+                  <Text style={{ fontFamily: Fonts.heading, fontSize: 22, color: Colors.white }}>{m(fact.title)}</Text>
+                  <Text style={{ fontFamily: Fonts.body, fontSize: 15, lineHeight: 22, color: Colors.textSecondary }}>{m(fact.detail)}</Text>
                 </>
               )}
             </View>
@@ -107,6 +112,7 @@ export function TrustBar() {
 export function ProcessSteps({ steps }: { steps: { title: string; description: string }[] }) {
   const isDesktop = useIsDesktop();
   const tone = useTone();
+  const m = useMessages();
   return (
     <View role="list" style={{ flexDirection: isDesktop ? 'row' : 'column', gap: isDesktop ? Spacing.xl : Spacing.lg }}>
       {steps.map((step, i) => (
@@ -132,8 +138,8 @@ export function ProcessSteps({ steps }: { steps: { title: string; description: s
             {i + 1}
           </Text>
           <View style={{ flex: isDesktop ? undefined : 1, gap: 6 }}>
-            <Heading level={3}>{step.title}</Heading>
-            <Body style={{ color: tone === 'light' ? Colors.inkSecondary : Colors.textSecondary }}>{step.description}</Body>
+            <Heading level={3}>{m(step.title)}</Heading>
+            <Body style={{ color: tone === 'light' ? Colors.inkSecondary : Colors.textSecondary }}>{m(step.description)}</Body>
           </View>
         </View>
       ))}
@@ -146,6 +152,7 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
   const tone = useTone();
   const ink = tone === 'light' ? Colors.ink : Colors.white;
   const rule = tone === 'light' ? '#C9CDD1' : Colors.border;
+  const m = useMessages();
   return (
     <View style={{ borderTopWidth: 1, borderTopColor: rule, maxWidth: 860 }}>
       {faqs.map((faq, i) => {
@@ -170,7 +177,7 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
                       fontSize: 18,
                       lineHeight: 26,
                     }}>
-                    {faq.question}
+                    {m(faq.question)}
                   </Text>
                   <Text style={{ color: Colors.orange, fontSize: 26, lineHeight: 26, fontFamily: Fonts.body }}>{isOpen ? '−' : '+'}</Text>
                 </>
@@ -178,7 +185,7 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
             </Pressable>
             {isOpen ? (
               <View style={{ paddingBottom: 22, paddingRight: Spacing.xl }}>
-                <Body>{faq.answer}</Body>
+                <Body>{m(faq.answer)}</Body>
               </View>
             ) : null}
           </View>
@@ -192,6 +199,7 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
 export function FeaturedReview({ name, service, text }: { name: string; service?: string; text: string }) {
   const isDesktop = useIsDesktop();
   const tone = useTone();
+  const m = useMessages();
   return (
     <View role="figure" style={{ gap: Spacing.md, maxWidth: 880 }}>
       <Stars size={20} />
@@ -208,7 +216,7 @@ export function FeaturedReview({ name, service, text }: { name: string; service?
       </Text>
       <Text style={{ fontFamily: Fonts.bodyMedium, fontSize: 16, color: tone === 'light' ? Colors.inkSecondary : Colors.textSecondary }}>
         {name}
-        {service ? `, ${service.toLowerCase()}` : ''}
+        {service ? `, ${m(service).toLowerCase()}` : ''}
       </Text>
     </View>
   );
@@ -216,6 +224,7 @@ export function FeaturedReview({ name, service, text }: { name: string; service?
 
 export function ReviewCard({ name, place, text }: { name: string; place: string; text: string }) {
   const tone = useTone();
+  const m = useMessages();
   return (
     <View
       role="figure"
@@ -234,21 +243,24 @@ export function ReviewCard({ name, place, text }: { name: string; place: string;
         {'”'}
       </Body>
       <Text style={{ fontFamily: Fonts.bodyMedium, color: tone === 'light' ? Colors.inkSecondary : Colors.textSecondary, fontSize: 15 }}>
-        {name}, {place.toLowerCase()}
+        {name}, {m(place).toLowerCase()}
       </Text>
     </View>
   );
 }
 
+const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
 export function StatBlock({ stats }: { stats: { value: string; label: string }[] }) {
   const tone = useTone();
+  const m = useMessages();
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xl }}>
       {stats.map((s) => (
         <View key={s.label} style={{ gap: 2, minWidth: 160, flex: 1 }}>
           <Text style={{ color: Colors.orange, fontFamily: Fonts.display, fontSize: 52, lineHeight: 56 }}>{s.value}</Text>
           <Text style={{ color: tone === 'light' ? Colors.inkSecondary : Colors.textSecondary, fontFamily: Fonts.body, fontSize: 16 }}>
-            {s.label.charAt(0).toUpperCase() + s.label.slice(1)}
+            {capitalize(m(s.label))}
           </Text>
         </View>
       ))}

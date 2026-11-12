@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { type Href } from 'expo-router';
+import { T, useGT, useMessages, Var } from 'gt-react-native';
 import { Linking, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -48,6 +49,8 @@ function Column({ title, children }: { title: string; children: React.ReactNode 
 export function Footer() {
   const insets = useSafeAreaInsets();
   const isDesktop = useIsDesktop();
+  const gt = useGT();
+  const m = useMessages();
   return (
     <View role="contentinfo" style={{ backgroundColor: '#080808', borderTopWidth: 1, borderTopColor: Colors.border, paddingBottom: insets.bottom }}>
       <View
@@ -65,7 +68,7 @@ export function Footer() {
               source={require('../../assets/images/logo.png')}
               style={{ width: isDesktop ? 112 : 80, height: isDesktop ? 112 : 80 }}
               contentFit="contain"
-              accessibilityLabel="Dynamic Roofing, built to protect, built to last"
+              accessibilityLabel={gt('Dynamic Roofing, built to protect, built to last')}
             />
             <View>
               <FooterLink label={Site.phoneDisplay} phone />
@@ -77,20 +80,20 @@ export function Footer() {
           </View>
 
           <View style={{ flex: isDesktop ? 3 : undefined, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: Spacing.xl, columnGap: isDesktop ? Spacing.xl : 0 }}>
-            <Column title="Services">
+            <Column title={gt('Services')}>
               {services.map((s) => (
-                <FooterLink key={s.slug} label={s.name} href={`/services/${s.slug}` as Href} />
+                <FooterLink key={s.slug} label={m(s.name)} href={`/services/${s.slug}` as Href} />
               ))}
-              <FooterLink label="Compare shingles" href="/shingles" />
+              <FooterLink label={gt('Compare shingles')} href="/shingles" />
             </Column>
 
-            <Column title="Areas we serve">
+            <Column title={gt('Areas we serve')}>
               {locations.map((l) => (
                 <FooterLink key={l.slug} label={`${l.city}, GA`} href={`/locations/${l.slug}` as Href} />
               ))}
             </Column>
 
-            <Column title="Follow us">
+            <Column title={gt('Follow us')}>
               {Site.socials.map((s) => (
                 <FooterLink key={s.label} label={s.label} onPress={() => Linking.openURL(s.url)} />
               ))}
@@ -99,7 +102,10 @@ export function Footer() {
         </View>
 
         <Text style={{ fontFamily: Fonts.body, fontSize: 13, lineHeight: 20, color: Colors.granule }}>
-          {'©'} {new Date().getFullYear()} {Site.name}. Licensed and insured. GAF Certified and Atlas Pro+ Gold contractor.
+          <T>
+            {'©'} <Var>{new Date().getFullYear()}</Var> <Var>{Site.name}</Var>. Licensed and insured. GAF Certified and Atlas Pro+ Gold
+            contractor.
+          </T>
         </Text>
       </View>
     </View>

@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { msg, T, useGT, useMessages } from 'gt-react-native';
 import { Linking, Platform, StyleSheet, Text, View } from 'react-native';
 
 import { HeroVideo } from '@/components/hero-video';
@@ -30,13 +31,13 @@ const featured = googleReviews.find((r) => r.name === 'Janice Brooks')!;
 const supporting = ['Alina Tkachenko', 'Heidi Swanson'].map((n) => googleReviews.find((r) => r.name === n)!);
 
 const serviceBlurbs: Record<string, string> = {
-  'roof-replacement': 'Full tear-off and new GAF Timberline HDZ roofs, usually done in one or two days.',
-  'roof-repair': 'Leaks, missing shingles, flashing, and everyday wear, fixed fast.',
-  'storm-damage-roofing': 'Hail and wind damage found, documented, and repaired.',
-  'insurance-claims': 'We file with you and meet your adjuster on the roof.',
-  gutters: 'Seamless gutters and guards that move water away from your home.',
-  siding: 'Siding repair and replacement that keeps weather out.',
-  'roof-inspection': 'Always free, with a photo report of everything we find.',
+  'roof-replacement': msg('Full tear-off and new GAF Timberline HDZ roofs, usually done in one or two days.'),
+  'roof-repair': msg('Leaks, missing shingles, flashing, and everyday wear, fixed fast.'),
+  'storm-damage-roofing': msg('Hail and wind damage found, documented, and repaired.'),
+  'insurance-claims': msg('We file with you and meet your adjuster on the roof.'),
+  gutters: msg('Seamless gutters and guards that move water away from your home.'),
+  siding: msg('Siding repair and replacement that keeps weather out.'),
+  'roof-inspection': msg('Always free, with a photo report of everything we find.'),
 };
 
 /** CSS-only lengths (calc, max) that React Native's style types do not model. Web only. */
@@ -48,6 +49,7 @@ const css = (value: string) => value as unknown as number;
  */
 function ServiceRow({ slug, name, featured }: { slug: string; name: string; featured?: boolean }) {
   const isDesktop = useIsDesktop();
+  const m = useMessages();
   return (
     <PressableLink
       href={{ pathname: '/services/[slug]', params: { slug } }}
@@ -68,9 +70,9 @@ function ServiceRow({ slug, name, featured }: { slug: string; name: string; feat
               color: state.hovered || state.pressed ? Colors.orange : Colors.white,
               textDecorationLine: state.hovered ? 'underline' : 'none',
             }}>
-            {name}
+            {m(name)}
           </Text>
-          <Body style={featured ? { fontSize: 18, lineHeight: 28 } : { fontSize: 16, lineHeight: 24 }}>{serviceBlurbs[slug]}</Body>
+          <Body style={featured ? { fontSize: 18, lineHeight: 28 } : { fontSize: 16, lineHeight: 24 }}>{m(serviceBlurbs[slug])}</Body>
         </>
       )}
     </PressableLink>
@@ -79,6 +81,7 @@ function ServiceRow({ slug, name, featured }: { slug: string; name: string; feat
 
 export default function HomeScreen() {
   const isDesktop = useIsDesktop();
+  const gt = useGT();
   const claimSteps = getService('insurance-claims')!.process;
   // On wide web screens the video runs off the right edge of the window. That needs
   // CSS lengths, so tablets in the native app keep the two columns inside the page width.
@@ -119,16 +122,20 @@ export default function HomeScreen() {
                 { gap: Spacing.md, alignSelf: 'stretch', justifyContent: 'center' },
                 bleed ? { flexGrow: 0, flexShrink: 1, flexBasis: 460 } : isDesktop ? { flex: 5 } : null,
               ]}>
-              <Heading level={1}>GA{'\u2019'}s trusted roofing & storm damage experts</Heading>
+              <Heading level={1}>
+                <T>GA{'\u2019'}s trusted roofing & storm damage experts</T>
+              </Heading>
               <Body style={{ fontSize: 18, lineHeight: 28 }}>
-                Free inspections, a photo report of everything we find, and help with your insurance claim from the first call to the final
-                invoice. Serving all of west metro Atlanta.
+                <T>
+                  Free inspections, a photo report of everything we find, and help with your insurance claim from the first call to the
+                  final invoice. Serving all of west metro Atlanta.
+                </T>
               </Body>
               <View style={{ marginTop: Spacing.sm }}>
                 <PhoneLettering />
               </View>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, alignItems: 'center' }}>
-                <OrangeButton label="Book a free inspection" onPress={() => Linking.openURL(Site.calendlyUrl)} />
+                <OrangeButton label={gt('Book a free inspection')} onPress={() => Linking.openURL(Site.calendlyUrl)} />
               </View>
             </View>
             <View
@@ -151,7 +158,9 @@ export default function HomeScreen() {
 
       {/* Services: a plain index of what we do, not a grid of cards */}
       <Section style={{ gap: Spacing.lg }}>
-        <Heading level={2}>What we fix and install</Heading>
+        <Heading level={2}>
+          <T>What we fix and install</T>
+        </Heading>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
           {services.map((service, i) => (
             <ServiceRow key={service.slug} slug={service.slug} name={service.name} featured={i === 0} />
@@ -162,26 +171,32 @@ export default function HomeScreen() {
       {/* Insurance claims process: a real sequence, so it is numbered */}
       <Section alt style={{ gap: Spacing.xl }}>
         <View style={{ gap: Spacing.sm }}>
-          <Heading level={2}>How an insurance claim works with us</Heading>
-          <Body>We work for you, not the insurance company. Most homeowners never have to argue with an adjuster.</Body>
+          <Heading level={2}>
+            <T>How an insurance claim works with us</T>
+          </Heading>
+          <Body>
+            <T>We work for you, not the insurance company. Most homeowners never have to argue with an adjuster.</T>
+          </Body>
         </View>
         <ProcessSteps steps={claimSteps} />
         <View style={{ flexDirection: 'row' }}>
-          <OrangeButton label="Read about insurance claims" variant="outline" href="/services/insurance-claims" />
+          <OrangeButton label={gt('Read about insurance claims')} variant="outline" href="/services/insurance-claims" />
         </View>
       </Section>
 
       {/* Reviews: the one light section, so the page changes pace halfway down */}
       <Section variant="light" style={{ gap: Spacing.xl }}>
-        <Heading level={2}>What homeowners say</Heading>
+        <Heading level={2}>
+          <T>What homeowners say</T>
+        </Heading>
         <FeaturedReview name={featured.name} service={featured.service} text={featured.text} />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xl }}>
           {supporting.map((r) => (
-            <ReviewCard key={r.name} name={r.name} place={r.service ?? 'Google review'} text={r.text} />
+            <ReviewCard key={r.name} name={r.name} place={r.service ?? msg('Google review')} text={r.text} />
           ))}
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <OrangeButton label="Read all 30 reviews on Google" variant="outline" onPress={() => Linking.openURL(Site.googleReviewsUrl)} />
+          <OrangeButton label={gt('Read all 30 reviews on Google')} variant="outline" onPress={() => Linking.openURL(Site.googleReviewsUrl)} />
         </View>
       </Section>
 
@@ -192,10 +207,14 @@ export default function HomeScreen() {
       <Section alt>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.xxl }}>
           <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:380, maxWidth: 500, gap: Spacing.md }}>
-            <Heading level={2}>Pick your shingle before we start</Heading>
-            <Body>Compare popular GAF shingles side by side and see every Timberline HDZ{'®'} color on a real house.</Body>
+            <Heading level={2}>
+              <T>Pick your shingle before we start</T>
+            </Heading>
+            <Body>
+              <T>Compare popular GAF shingles side by side and see every Timberline HDZ{'®'} color on a real house.</T>
+            </Body>
             <View style={{ flexDirection: 'row', marginTop: Spacing.sm }}>
-              <OrangeButton label="Compare shingles" href="/shingles" />
+              <OrangeButton label={gt('Compare shingles')} href="/shingles" />
             </View>
           </View>
           <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:320, maxWidth: 548, gap: Spacing.md }}>
@@ -211,7 +230,7 @@ export default function HomeScreen() {
               ))}
             </View>
             <Text style={{ fontFamily: Fonts.body, fontSize: 14, lineHeight: 20, color: Colors.granule }}>
-              Six Timberline HDZ{'®'} colors. Colors on a screen are approximate.
+              <T>Six Timberline HDZ{'®'} colors. Colors on a screen are approximate.</T>
             </Text>
           </View>
         </View>
@@ -221,8 +240,12 @@ export default function HomeScreen() {
       <Section>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.xxl }}>
           <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:300, maxWidth: 440, gap: Spacing.md }}>
-            <Heading level={2}>Where we work</Heading>
-            <Body>Based in Dallas, GA, with crews across west metro Atlanta.</Body>
+            <Heading level={2}>
+              <T>Where we work</T>
+            </Heading>
+            <Body>
+              <T>Based in Dallas, GA, with crews across west metro Atlanta.</T>
+            </Body>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', columnGap: Spacing.xl, rowGap: Spacing.xs, marginTop: Spacing.sm }}>
               {locations.map((loc) => (
                 <Chip key={loc.slug} label={loc.city} href={{ pathname: '/locations/[city]', params: { city: loc.slug } }} />
@@ -239,8 +262,12 @@ export default function HomeScreen() {
       <Section alt>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', columnGap: Spacing.xxl, rowGap: Spacing.lg }}>
           <View style={{ flexGrow: 1, flexShrink: 1, flexBasis:260, maxWidth: 340, gap: Spacing.md }}>
-            <Heading level={2}>Common questions</Heading>
-            <Body>Have a question that isn{'’'}t here? Call and ask.</Body>
+            <Heading level={2}>
+              <T>Common questions</T>
+            </Heading>
+            <Body>
+              <T>Have a question that isn{'’'}t here? Call and ask.</T>
+            </Body>
             <PhoneLettering size={36} />
           </View>
           <View style={{ flexGrow: 2, flexShrink: 1, flexBasis: 320, maxWidth: 700 }}>

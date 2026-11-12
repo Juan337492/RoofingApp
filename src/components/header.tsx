@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { Link, usePathname, type Href } from 'expo-router';
+import { msg, useGT, useMessages } from 'gt-react-native';
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,23 +9,28 @@ import { firstPaint, OrangeButton, PressableLink, useLayoutWidth, type Interacti
 import { Site } from '@/constants/site';
 import { Colors, Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { services } from '@/data/services';
+import { languages, useLanguage } from '@/i18n/language';
 
-/** Desktop bar: the jobs people call about most, plus shingles and contact. */
+/**
+ * Desktop bar: the jobs people call about most, plus shingles and contact. Space is
+ * tight, so translations are asked to stay short. The options are written out on
+ * each line because `npx gt translate` only reads literal options.
+ */
 const primaryLinks: { label: string; href: Href }[] = [
-  { label: 'Roof replacement', href: '/services/roof-replacement' },
-  { label: 'Roof repair', href: '/services/roof-repair' },
-  { label: 'Storm damage', href: '/services/storm-damage-roofing' },
-  { label: 'Insurance claims', href: '/services/insurance-claims' },
-  { label: 'Shingles', href: '/shingles' },
-  { label: 'Contact', href: '/contact' },
+  { label: msg('Roof replacement', { $context: 'Link in a crowded navigation bar. One or two short words.', $maxChars: 16 }), href: '/services/roof-replacement' },
+  { label: msg('Roof repair', { $context: 'Link in a crowded navigation bar. One or two short words.', $maxChars: 16 }), href: '/services/roof-repair' },
+  { label: msg('Storm damage', { $context: 'Link in a crowded navigation bar. One or two short words.', $maxChars: 16 }), href: '/services/storm-damage-roofing' },
+  { label: msg('Insurance claims', { $context: 'Link in a crowded navigation bar. One or two short words.', $maxChars: 16 }), href: '/services/insurance-claims' },
+  { label: msg('Shingles', { $context: 'Link in a crowded navigation bar. One or two short words.', $maxChars: 16 }), href: '/shingles' },
+  { label: msg('Contact', { $context: 'Link in a crowded navigation bar. One or two short words.', $maxChars: 16 }), href: '/contact' },
 ];
 
 /** Full menu: every service page. */
 const menuLinks: { label: string; href: Href }[] = [
-  { label: 'Home', href: '/' },
+  { label: msg('Home'), href: '/' },
   ...services.map((s) => ({ label: s.name, href: `/services/${s.slug}` as Href })),
-  { label: 'Compare shingles', href: '/shingles' },
-  { label: 'Contact', href: '/contact' },
+  { label: msg('Compare shingles'), href: '/shingles' },
+  { label: msg('Contact'), href: '/contact' },
 ];
 
 function HamburgerIcon() {
@@ -38,10 +44,11 @@ function HamburgerIcon() {
 }
 
 function Brand({ compact }: { compact: boolean }) {
+  const gt = useGT();
   return (
     <Link href="/" asChild>
       <Pressable
-        aria-label="Dynamic Roofing home"
+        aria-label={gt('Dynamic Roofing home')}
         style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1, minWidth: 0 }}>
         <View {...(compact ? firstPaint('brand-logo') : {})} style={{ width: compact ? 40 : 48, height: compact ? 40 : 48 }}>
           {/* The mark alone: the full logo's wordmark is unreadable at this size and repeats the text beside it. */}
@@ -57,6 +64,8 @@ function Brand({ compact }: { compact: boolean }) {
 
 function FullScreenMenu({ visible, onClose, pathname }: { visible: boolean; onClose: () => void; pathname: string }) {
   const insets = useSafeAreaInsets();
+  const gt = useGT();
+  const m = useMessages();
   return (
     <Modal visible={visible} animationType="fade" onRequestClose={onClose} statusBarTranslucent>
       <View style={{ flex: 1, backgroundColor: Colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }}>
@@ -71,7 +80,7 @@ function FullScreenMenu({ visible, onClose, pathname }: { visible: boolean; onCl
             borderBottomColor: Colors.border,
           }}>
           <Brand compact />
-          <Pressable onPress={onClose} aria-label="Close menu" style={{ padding: Spacing.sm }} hitSlop={8}>
+          <Pressable onPress={onClose} aria-label={gt('Close menu')} style={{ padding: Spacing.sm }} hitSlop={8}>
             <Text style={{ color: Colors.white, fontSize: 26, lineHeight: 28 }}>{'✕'}</Text>
           </Pressable>
         </View>
@@ -91,7 +100,7 @@ function FullScreenMenu({ visible, onClose, pathname }: { visible: boolean; onCl
                   opacity: state.pressed ? 0.6 : 1,
                 })}>
                 <Text style={{ fontFamily: Fonts.heading, fontSize: 26, color: active ? Colors.orange : Colors.white }}>
-                  {item.label}
+                  {m(item.label)}
                 </Text>
               </PressableLink>
             );
@@ -99,9 +108,10 @@ function FullScreenMenu({ visible, onClose, pathname }: { visible: boolean; onCl
         </ScrollView>
 
         <View style={{ padding: Spacing.lg, gap: Spacing.sm, borderTopWidth: 1, borderTopColor: Colors.border }}>
-          <OrangeButton label={`Call ${Site.phoneDisplay}`} phone />
+          <LanguageChoice />
+          <OrangeButton label={gt('Call {phone}', { phone: Site.phoneDisplay })} phone />
           <Text style={{ color: Colors.textSecondary, fontFamily: Fonts.body, fontSize: 14, textAlign: 'center' }}>
-            Roof inspections are always free.
+            {gt('Roof inspections are always free.')}
           </Text>
         </View>
       </View>
@@ -110,6 +120,7 @@ function FullScreenMenu({ visible, onClose, pathname }: { visible: boolean; onCl
 }
 
 function NavLink({ label, href, active }: { label: string; href: Href; active: boolean }) {
+  const m = useMessages();
   return (
     <PressableLink
       href={href}
@@ -124,17 +135,71 @@ function NavLink({ label, href, active }: { label: string; href: Href; active: b
             fontSize: 15,
             color: state.hovered ? Colors.orange : Colors.white,
           }}>
-          {label}
+          {m(label)}
         </Text>
       )}
     </PressableLink>
   );
 }
 
+/**
+ * Switches between English and Spanish, labeled with the language you would switch
+ * to, in that language. Phones get it in the menu instead, since the bar has no
+ * room (Spanish browsers are switched automatically anyway).
+ */
+function LanguageToggle({ undecided }: { undecided: boolean }) {
+  const { language, setLanguage } = useLanguage();
+  const other = languages.find((l) => l.code !== language)!;
+  return (
+    <Pressable
+      onPress={() => setLanguage(other.code)}
+      aria-label={other.label}
+      hitSlop={8}
+      // Hidden on phones; global.css shows it on wider screens before the app knows the width.
+      {...firstPaint('language-toggle')}
+      style={(state: InteractionState) => [
+        { display: undecided ? 'none' : 'flex', paddingVertical: 6, borderRadius: 4 },
+        state.focused && { outlineColor: Colors.orange, outlineStyle: 'solid', outlineWidth: 2, outlineOffset: 4 },
+      ]}>
+      {(state: InteractionState) => (
+        <Text style={{ fontFamily: Fonts.bodyMedium, fontSize: 15, color: state.hovered || state.pressed ? Colors.orange : Colors.white }}>
+          {other.label}
+        </Text>
+      )}
+    </Pressable>
+  );
+}
+
+/** The menu's language switch: both names, the current one marked. */
+function LanguageChoice() {
+  const { language, setLanguage } = useLanguage();
+  return (
+    <View role="radiogroup" style={{ flexDirection: 'row', justifyContent: 'center', gap: Spacing.lg, paddingBottom: Spacing.xs }}>
+      {languages.map((l) => {
+        const selected = l.code === language;
+        return (
+          <Pressable key={l.code} role="radio" aria-checked={selected} onPress={() => setLanguage(l.code)} hitSlop={8} style={{ paddingVertical: 6 }}>
+            <Text
+              style={{
+                fontFamily: selected ? Fonts.bodySemiBold : Fonts.body,
+                fontSize: 16,
+                color: selected ? Colors.white : Colors.textSecondary,
+                textDecorationLine: selected ? 'underline' : 'none',
+              }}>
+              {l.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 function HeaderCallButton({ short }: { short: boolean }) {
+  const gt = useGT();
   return (
     <OrangeButton
-      label={short ? 'Call' : Site.phoneDisplay}
+      label={short ? gt('Call') : Site.phoneDisplay}
       phone
       style={{ paddingVertical: 10, paddingHorizontal: short ? 18 : 16 }}
     />
@@ -146,8 +211,9 @@ export function Header() {
   const pathname = usePathname();
   const width = useLayoutWidth();
   const [menuOpen, setMenuOpen] = useState(false);
-  // Below this width the six links no longer fit beside the brand and phone.
-  const compact = width < 1080;
+  const gt = useGT();
+  // Below this width the six links no longer fit beside the brand, language, and phone.
+  const compact = width < 1120;
   const phone = width < 640;
   // Width is 0 in the exported HTML. Include both versions of what differs, and let global.css choose.
   const undecided = width === 0;
@@ -173,7 +239,7 @@ export function Header() {
           <View
             role="navigation"
             {...firstPaint('desktop-nav')}
-            style={{ display: undecided ? 'none' : 'flex', flexDirection: 'row', alignItems: 'center', gap: Spacing.lg }}>
+            style={{ display: undecided ? 'none' : 'flex', flexDirection: 'row', alignItems: 'center', gap: 18 }}>
             {primaryLinks.map((item) => (
               <NavLink key={item.label} {...item} active={pathname === item.href} />
             ))}
@@ -181,6 +247,7 @@ export function Header() {
         ) : null}
 
         <View {...firstPaint('header-actions')} style={{ flexDirection: 'row', alignItems: 'center', gap: phone ? 12 : Spacing.md, flexShrink: 0 }}>
+          {!phone || undecided ? <LanguageToggle undecided={undecided} /> : null}
           {undecided ? (
             <>
               <View {...firstPaint('call-short')}>
@@ -194,7 +261,7 @@ export function Header() {
             <HeaderCallButton short={phone} />
           )}
           {compact ? (
-            <Pressable onPress={() => setMenuOpen(true)} aria-label="Open menu" hitSlop={8} {...firstPaint('menu-button')} style={{ padding: 4 }}>
+            <Pressable onPress={() => setMenuOpen(true)} aria-label={gt('Open menu')} hitSlop={8} {...firstPaint('menu-button')} style={{ padding: 4 }}>
               <HamburgerIcon />
             </Pressable>
           ) : null}

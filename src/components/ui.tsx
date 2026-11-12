@@ -1,4 +1,5 @@
 import { Link, useRouter, type Href } from 'expo-router';
+import { useGT } from 'gt-react-native';
 import { createContext, useContext, useSyncExternalStore } from 'react';
 import {
   Linking,
@@ -215,9 +216,10 @@ export function CallButton({
   label?: string;
   style?: ViewStyle;
 }) {
+  const gt = useGT();
   return (
     <OrangeButton
-      label={label ?? 'Book a free inspection'}
+      label={label ?? gt('Book a free inspection')}
       variant={variant}
       style={style}
       phone
@@ -233,10 +235,11 @@ export function PhoneLettering({ size, color }: { size?: number; color?: string 
   const tone = useTone();
   const isDesktop = useIsDesktop();
   const fontSize = size ?? (isDesktop ? 64 : 44);
+  const gt = useGT();
   return (
     <Pressable
       {...phoneLinkProps()}
-      aria-label={`Call ${Site.phoneDisplay}`}
+      aria-label={gt('Call {phone}', { phone: Site.phoneDisplay })}
       style={(state: InteractionState) => [{ alignSelf: 'flex-start', borderRadius: 4 }, state.focused && styles.focusRing]}>
       {(state: InteractionState) => (
         <Text
@@ -307,8 +310,9 @@ export function Section({
 }
 
 export function Stars({ size = 16 }: { size?: number }) {
+  const gt = useGT();
   return (
-    <Text style={{ color: Colors.gold, fontSize: size, letterSpacing: 2 }} aria-label="5 out of 5 stars">
+    <Text style={{ color: Colors.gold, fontSize: size, letterSpacing: 2 }} aria-label={gt('5 out of 5 stars')}>
       {'★★★★★'}
     </Text>
   );

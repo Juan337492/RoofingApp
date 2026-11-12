@@ -20,6 +20,7 @@
   html:not([data-hydrated]) [data-fp='brand-name'] { font-size: 24px !important; }
   html:not([data-hydrated]) [data-fp='call-short'] { display: none !important; }
   html:not([data-hydrated]) [data-fp='call-full'] { display: flex !important; }
+  html:not([data-hydrated]) [data-fp='language-toggle'] { display: flex !important; }
 }
 
 @media (min-width: 820px) {
@@ -49,7 +50,7 @@
   html:not([data-hydrated]) [data-fp='service-row'] { width: 47% !important; }
 }
 
-@media (min-width: 1080px) {
+@media (min-width: 1120px) {
   html:not([data-hydrated]) [data-fp='desktop-nav'] { display: flex !important; }
   html:not([data-hydrated]) [data-fp='menu-button'] { display: none !important; }
 }
